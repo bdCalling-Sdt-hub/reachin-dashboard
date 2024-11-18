@@ -11,14 +11,14 @@ const PrivateRoute = ({ children }) => {
     }
     
     if (isError) {
-        return <Navigate to="/auth/login" state={{ from: location }} />;
+        return <Navigate to="/login" state={{ from: location }} />;
     }
     
     if (profile?.role && (profile?.role === "ADMIN" || profile?.role === "SUPER_ADMIN")) {
         return children;
     }
     
-    return <Navigate to="/auth/login" state={{ from: location }} />;
+    return <Navigate to="/login" state={{ from: location }} />;
 };
 
 export default PrivateRoute;

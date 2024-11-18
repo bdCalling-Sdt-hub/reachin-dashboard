@@ -1,40 +1,53 @@
-import { Button, Checkbox, Form, Input } from "antd";
+import { Checkbox, Form, Input } from "antd";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import FormItem from "../../components/common/FormItem";
-// import Cookies from "js-cookie"; 
+import Spinner from "../../components/common/Spinner";
+import { useLoginMutation, useProfileQuery } from "../../redux/apiSlices/authSlice";
+import toast from "react-hot-toast";
 
 
 const Login = () => {
+  const [login, { isLoading }] = useLoginMutation();
+  const { refetch } = useProfileQuery();
   const navigate = useNavigate()
 
 
-  const onFinish = async(values) => {
+  const onFinish = async (values) => {
+    try {
+      await login(values).unwrap()
+        .then(result => {
+          if (result.success === true) {
+            toast.success(result.message);
+            refetch();
+            navigate("/")
+          }
+        });
+    } catch (error) {
+      console.log(error)
+    }
 
-          navigate("/")
-          // Cookies.set('token', token, { expires: 7 }) 
-   
   };
 
   return (
-  
+
     <div className=" flex gap-2 justify-center items-center w-full ">
 
-      <div className="w-1/2"> 
-<img src="/login.svg" alt="" className="w-full h-[calc(100vh-80px)] object-fill" />
-      </div> 
+      <div className="w-1/2">
+        <img src="/login.svg" alt="" className="w-full h-[calc(100vh-80px)] object-fill" />
+      </div>
 
-      <div className=" w-1/2 flex items-center justify-center "> 
-      <div className="w-2/4  rounded-lg shadow-lg px-[40px] py-[60px]">
-      <div className="text-start mb-8">
-          <h1 className="text-[25px] font-semibold ">Sign In</h1>
-        </div>
-        <Form
-          onFinish={onFinish}
-          layout="vertical"
-        >
+      <div className=" w-1/2 flex items-center justify-center ">
+        <div className="w-2/4  rounded-lg shadow-lg px-[40px] py-[60px]">
+          <div className="text-start mb-8">
+            <h1 className="text-[25px] font-semibold ">Sign In</h1>
+          </div>
+          <Form
+            onFinish={onFinish}
+            layout="vertical"
+          >
 
-          <FormItem name={"email"} label={"Email"} />
+            <FormItem name={"email"} label={"Email"} />
 
             <Form.Item
               name="password"
@@ -59,7 +72,7 @@ const Login = () => {
             </Form.Item>
 
             <div className="flex items-center justify-between">
-              <Form.Item style={{marginBottom: 0}} name="remember" valuePropName="checked">
+              <Form.Item style={{ marginBottom: 0 }} name="remember" valuePropName="checked">
                 <Checkbox>Remember me</Checkbox>
               </Form.Item>
 
@@ -69,35 +82,35 @@ const Login = () => {
               >
                 Forgot password
               </a>
-          </div>
+            </div>
 
-          <Form.Item style={{marginBottom: 0}}>
-            <button
-              htmlType="submit" 
-              type="submit"
-              style={{
-                width: '100%',
-                height: 45,
-                color: "white",
-                fontWeight: "400px",
-                fontSize: "18px",
-           
-                marginTop: 20
-              }}
-              className="flex items-center justify-center bg-primary rounded-lg"
-            >
-              {/* {isLoading? < Spinner/> : "Sign in"} */} Sign in
-            </button>
-          </Form.Item>
+            <Form.Item style={{ marginBottom: 0 }}>
+              <button
+                htmlType="submit"
+                type="submit"
+                style={{
+                  width: '100%',
+                  height: 45,
+                  color: "white",
+                  fontWeight: "400px",
+                  fontSize: "18px",
 
-          
-        </Form>
+                  marginTop: 20
+                }}
+                className="flex items-center justify-center bg-primary rounded-lg"
+              >
+                {isLoading ? < Spinner /> : "Sign in"}
+              </button>
+            </Form.Item>
+
+
+          </Form>
+        </div>
       </div>
-      </div> 
 
     </div>
-      
-    
+
+
   );
 };
 

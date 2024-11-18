@@ -36,10 +36,10 @@ const router = createBrowserRouter([
                 path: "/",
                 element: <Home />
             },
-          { 
-              path:"/user/:id" , 
-             element: <User/>
-            } ,
+            {
+                path: "/user/:id",
+                element: <User />
+            },
             {
                 path: "/registered-users",
                 element: <Users />
@@ -79,12 +79,12 @@ const router = createBrowserRouter([
             {
                 path: "/blogs",
                 element: <Blogs />
-            }, 
+            },
             {
                 path: "/package-setting",
                 element: <PackageSetting />
             },
-   
+
             {
                 path: "/about-us",
                 element: <OurStories />
@@ -96,8 +96,8 @@ const router = createBrowserRouter([
             {
                 path: "/terms-and-conditions",
                 element: <TermsAndConditions />
-            },  
-          
+            },
+
             {
                 path: "/change-password",
                 element: <ChangePassword />
@@ -113,9 +113,9 @@ const router = createBrowserRouter([
             ,
             {
                 path: "/notification",
-                element: <Notifications/> 
+                element: <Notifications />
             }
-               
+
         ]
     },
     {

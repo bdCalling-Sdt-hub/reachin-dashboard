@@ -6,19 +6,19 @@ import { Badge } from 'antd';
 import { useUser } from '../../provider/User';
 
 const Header = () => {
-    const {user}  = useUser();
-    const src = user?.image?.startsWith("https") ? user?.image : `${imageUrl}/${user?.image}`
+    const { user } = useUser();
+    const src = user?.profile?.startsWith("https") ? user?.profile : `${imageUrl}/${user?.profile}`
     return (
         <div className='flex items-center gap-5 justify-end'>
             <Link to="/notification" className='h-fit mt-[10px]'>
                 <Badge count={5} >
-                    <FaRegBell color="#4E4E4E" size={24}/>
+                    <FaRegBell color="#4E4E4E" size={24} />
                 </Badge>
             </Link>
 
             <Link to="/profile" className='flex  items-center gap-3'>
                 <img
-                    style={{ 
+                    style={{
                         clipPath: "circle()",
                         width: 45,
                         height: 45
@@ -27,7 +27,7 @@ const Header = () => {
                     alt="person-male--v2"
                     className='clip'
                 />
-                <p>{user?.firstName} {" "} {user?.lastName}</p>
+                <p>{user?.name}</p>
             </Link>
         </div>
     )

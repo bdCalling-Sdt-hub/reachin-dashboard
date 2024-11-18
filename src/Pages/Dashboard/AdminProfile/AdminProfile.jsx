@@ -21,7 +21,7 @@ const AdminProfile = () => {
 
   return (
     <div>
- <Title className="mb-4">Profile</Title>
+      <Title className="mb-4">Profile</Title>
       <div
 
         className=" bg-white p-5 px-10 rounded-xl "

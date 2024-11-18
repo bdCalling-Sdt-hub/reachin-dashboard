@@ -1,50 +1,21 @@
 import { Table } from 'antd'
 import React, { useState } from 'react';
-import { FiDelete } from 'react-icons/fi'; 
 import { RiDeleteBin5Line } from 'react-icons/ri';
 import CreateAdmin from '../../components/ui/Admin/CreateAdmin';
 import Title from '../../components/common/Title';
+import { useGetAdminQuery } from '../../redux/apiSlices/adminSlice';
 
-const data =[
-    {
-        key : 1 ,
-        name: "sinchan" , 
-        email: "sinchan@gmail.com" ,
-    } , 
-    {
-        key : 2 ,
-        name: "sinchan" , 
-        email: "sinchan@gmail.com" ,
-    } , 
-    {
-        key : 3 ,
-        name: "sinchan" , 
-        email: "sinchan@gmail.com" ,
-    } , 
-    {
-        key : 4 ,
-        name: "sinchan" , 
-        email: "sinchan@gmail.com" ,
-    } , 
-    {
-        key : 5 ,
-        name: "sinchan" , 
-        email: "sinchan@gmail.com" ,
-    } , 
-
-    
-]
-
-const Admin = () => { 
- const [open , setOpen] = useState(false)
+const Admin = () => {
+    const [open, setOpen] = useState(false);
+    const {data: admins} = useGetAdminQuery();
 
 
-    const columns= [
+    const columns = [
         {
             title: "Serial No.",
             dataIndex: "index",
             key: "index",
-            render: (_,record, index) =><p>{index + 1}</p>
+            render: (_, record, index) => <p>{index + 1}</p>
         },
         {
             title: "Name",
@@ -60,19 +31,20 @@ const Admin = () => {
             title: "Action",
             dataIndex: "action",
             key: "action",
-            render: (_,record) => <RiDeleteBin5Line size={24} className="text-red-600"/>
+            render: (_, record) => <RiDeleteBin5Line size={24} className="text-red-600" />
         },
     ]
+
     return (
         <div>
             {/* header */}
             <div className='flex items-center justify-between mb-4'>
                 <Title className=''>Admins</Title>
-                <button className='bg-primary text-white h-10 px-4 rounded-md' onClick={()=>{setOpen(true)}}>+ Add Admin</button>
+                <button className='bg-primary text-white h-10 px-4 rounded-md' onClick={() => { setOpen(true) }}>+ Add Admin</button>
             </div>
 
             {/* table container */}
-            <Table columns={columns} dataSource={data} pagination={false}/> 
+            <Table columns={columns} dataSource={admins} pagination={false} />
             <CreateAdmin open={open} setOpen={setOpen} />
         </div>
     )
