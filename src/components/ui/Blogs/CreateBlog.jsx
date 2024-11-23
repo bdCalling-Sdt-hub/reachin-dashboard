@@ -1,62 +1,121 @@
 import { Form, Input, Modal, Select } from 'antd';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaRegImage } from 'react-icons/fa';
 import FormItem from "../../common/FormItem";
-import { titleOptions } from '../../common/FilterOptions';
-import JoditEditor from 'jodit-react';
-const CreateBlog = ({ itemForEdit, setItemForEdit, openAddModel, setOpenAddModel }) => {
+import { blogCategory } from '../../common/FilterOptions';
+import Spinner from '../../common/Spinner';
+import { imageUrl } from '../../../redux/api/baseApi';
+import { useCreateBlogMutation, useUpdateBlogMutation } from '../../../redux/apiSlices/blogSlice';
+import toast from 'react-hot-toast';
+
+
+const CreateBlog = ({ value, refetch, setValue, setOpen, open }) => {
   const [form] = Form.useForm();
-  const [imgFile, setImgFile] = useState(null);
-  const [imgUrl, setImgUrl] = useState(null); 
-  const editor = useRef(null)
-  const [content, setContent] = useState('');
+  const [imgUrl, setImgUrl] = useState(null);
+  const [createBlog, { isLoading }] = useCreateBlogMutation();
+  const [updateBlog, { isLoading: updateLoading }] = useUpdateBlogMutation();
+
 
   useEffect(() => {
-    if (itemForEdit) {
-      form.setFieldsValue({ title: itemForEdit?.name, description: itemForEdit?.description })
-      setImgUrl(itemForEdit?.image)
+    if (value) {
+      form.setFieldsValue(value)
+      setImgUrl(`${imageUrl}${value?.image}`)
     }
-  }, [itemForEdit])
+  }, [value])
 
 
   const handleCancel = () => {
-    setImgFile(null);
     setImgUrl(null);
-    setItemForEdit(null)
+    setValue(null)
     form.resetFields();
-    setOpenAddModel(false);
+    setOpen(false);
   };
 
-  const handleChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImgFile(file);
-      setImgUrl(URL.createObjectURL(file));
+  const onFinish = async (values) => {
+
+    const formData = new FormData();
+
+    Object.keys(values).forEach(key => {
+      formData.append(key, values[key])
+    })
+
+    if (value) {
+      try {
+        await updateBlog({ id: value._id, payloadData: formData}).unwrap().then((res) => {
+          console.log(res)
+          if (res.success == true) {
+            refetch();
+            handleCancel();
+            toast.success(res.message);
+          }
+        })
+      } catch (error) {
+        toast.error(error.data?.message || "An error occurred");
+      }
+    } else {
+      try {
+        await createBlog(formData).unwrap().then((res) => {
+          if (res.success == true) {
+            refetch();
+            toast.success(res.message);
+          }
+        })
+      } catch (error) {
+        if (error.data?.errorMessages && Array.isArray(error.data.errorMessages)) {
+          error.data.errorMessages.forEach((err) => {
+            toast.error(err.message);
+          });
+        } else {
+          toast.error(error.data?.message || "An error occurred");
+        }
+      }
     }
   };
-
-  const onFinish = (values) => {
-    console.log(values);
-    // Handle form submission logic here
-  }; 
 
 
   return (
     <Modal
       centered
-      open={openAddModel}
+      open={open || value}
       onCancel={handleCancel}
       width={500}
       footer={null}
     >
       <div className="">
         <h1 className="font-semibold text-[#555555] text-xl mb-2 mt-2">
-          {itemForEdit ? "Update Blog" : "Add Blog"}
+          {value ? "Update Blog" : "Add Blog"}
         </h1>
-        <Form onFinish={onFinish} layout="vertical" form={form}>
-          <FormItem name="Subject" label="subject" />
 
-          <Form.Item name="images" label={<p className="text-[#6D6D6D]">Image</p>}>
+        <Form onFinish={onFinish} layout="vertical" form={form}>
+
+          <FormItem name="subject" label="Subject" />
+
+          <Form.Item
+            name="image"
+            label={<p className="text-[#6D6D6D]">Image</p>}
+            rules={[
+              {
+                required: true,
+                validator: () => {
+                  if (!imgUrl) {
+                    return Promise.reject("Please Upload Image")
+                  }
+                  return Promise.resolve();
+                }
+              }
+            ]}
+          >
+            <input
+              id="image"
+              type="file"
+              onChange={(e) => {
+                const file = e.target.files[0];
+                form.setFieldsValue({ image: file });
+                const imgUrl = URL.createObjectURL(file);
+                setImgUrl(imgUrl);
+              }}
+              style={{ display: "none" }}
+            />
             <label htmlFor="image" className="p-3 border block  mb-2 rounded-lg">
               <div className="flex justify-center items-center w-full h-[80px] ">
                 {imgUrl ? (
@@ -65,43 +124,51 @@ const CreateBlog = ({ itemForEdit, setItemForEdit, openAddModel, setOpenAddModel
                   <FaRegImage className="text-5xl" />
                 )}
               </div>
-              <div className='hidden'>
-                <Input
-                  id="image"
-                  type="file"
-                  onChange={handleChange}
-                  className="hidden"
-                />
-              </div>
             </label>
           </Form.Item>
 
-          <Form.Item name="Category" label="Category"  >
-            <Select className=" rounded  h-[45px]" defaultValue=" Title">
-              {titleOptions.map((option) => (
-                <Option key={option.value} value={option.value}>
-                  {option.label}
+          <Form.Item
+            name="category"
+            label="Category"
+            rules={[
+              {
+                required: true,
+                message: `Please Pick Category`,
+              }
+            ]}
+          >
+            <Select className=" rounded  h-[45px]" placeholder="Select Category">
+              {blogCategory?.map((option) => (
+                <Option key={option} value={option}>
+                  {option}
                 </Option>
               ))}
             </Select>
-          </Form.Item>  
-
-          <FormItem name="link" label="Upload Link" />
-
-          <Form.Item name="description" label={<p className="text-[#6D6D6D]">Description</p>}>
-          <JoditEditor
-        ref={editor}
-        value={content} 
-        config={{
-          height: 280, 
-        }}
-          onChange={newContent => { setContent(newContent) }}
-      /> 
           </Form.Item>
 
-          <Form.Item className="text-center mt-4">
-            <button type="primary" htmlType="submit" className="bg-primary text-white w-[120px] h-[42px] rounded-lg">
-              Submit
+          <FormItem name="url" label="Upload Link" />
+
+          <Form.Item
+            name="details"
+            label={<p className="text-[#6D6D6D]">Description</p>}
+            rules={[
+              {
+                required: true,
+                message: `Please Write Description`,
+              }
+            ]}
+          >
+            <Input.TextArea
+              placeholder='Write description'
+              style={{
+                height: 180
+              }}
+            />
+          </Form.Item>
+
+          <Form.Item className="text-center flex items-center justify-center mt-4">
+            <button type="primary" htmlType="submit" className="bg-primary flex items-center justify-center text-white w-[120px] h-[42px] rounded-lg">
+              {isLoading || updateLoading ? <Spinner /> : value ? "Update Blog" : "Create Blog"}
             </button>
           </Form.Item>
         </Form>

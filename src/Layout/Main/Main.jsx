@@ -9,17 +9,17 @@ const Main = () => {
 
             {/* side bar */}
             <div className='col-span-2 h-screen bg-white'>
-                <Sidebar/>
+                <Sidebar />
             </div>
 
             {/* main container with header */}
             <div className='col-span-10'>
                 <div className='h-[68px] flex items-center justify-end pr-5'>
-                    <Header/>
+                    <Header />
                 </div>
 
                 <div className='bg-[#F6F6F6]  h-[calc(100vh-68px)]'>
-                    <div className='h-full overflow-y-auto rounded-md  px-6 pt-4'>
+                    <div className='h-full  overflow-y-auto rounded-md  px-6 pt-4'>
                         <Outlet />
                     </div>
                 </div>

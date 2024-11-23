@@ -3,24 +3,24 @@ import { api } from "../api/baseApi";
 const notificationSlice = api.injectEndpoints({
     endpoints: (builder)=>({
         notification: builder.query({
-            query: ()=> {
+            query: (page)=> {
+                const params = new URLSearchParams();
+                if(page) params.append("page", page);
+
                 return{
-                    url: `/notifications`,
-                    method: "GET",
-                    headers:{
-                        Authorization: `Bearer ${JSON.parse(localStorage.getItem("token"))}`
-                    }
+                    url: `/notification?${params.toString()}`,
+                    method: "GET"
                 }
+            },
+            transformResponse: (data)=>{
+                return data.data;
             }
         }),
-        read: builder.mutation({
+        readNotification: builder.mutation({
             query: ()=> {
                 return{
-                    url: `/notifications`,
-                    method: "GET",
-                    headers:{
-                        Authorization: `Bearer ${JSON.parse(localStorage.getItem("token"))}`
-                    }
+                    url: `/notification`,
+                    method: "PATCH"
                 }
             }
         }),
@@ -29,5 +29,5 @@ const notificationSlice = api.injectEndpoints({
 
 export const {
     useNotificationQuery,
-    useReadMutation
+    useReadNotificationMutation
 } = notificationSlice;

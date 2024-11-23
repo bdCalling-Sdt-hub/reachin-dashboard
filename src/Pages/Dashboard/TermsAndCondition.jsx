@@ -1,46 +1,56 @@
 import React, { useState, useRef, useEffect } from 'react';
 import JoditEditor from 'jodit-react';
 import Title from '../../components/common/Title';
+import { useCreateTermsMutation, useGetTermsQuery } from '../../redux/apiSlices/ruleSlice';
+import toast from 'react-hot-toast';
 
 
 const TermsAndCondition = () => {
   const editor = useRef(null)
   const [content, setContent] = useState('');
-  const termsAndCondition = {
-    description:"Tradcouples Matchmaking Services stands at the forefront of sophisticated matchmaking, where accomplished individuals can make exceptional connections. Here you can find women of your choice by sharing your thoughts and opinions You deserve nothing less than extraordinary – find someone born for you."
+  const [createTerms, {isLoading}] = useCreateTermsMutation();
+  const { data:terms, refetch } = useGetTermsQuery();
+
+
+  const aboutDataSave = async () => {
+
+    try {
+      await createTerms({content}).unwrap().then(({success, message}) => {
+        if (success === true) {
+          toast.success(message);
+          refetch()
+        }
+
+      })
+    } catch ({ message }) {
+      toast.error(message || "Something Wrong");
     }
-
-
-  const termsDataSave =async () => {
-
   }
 
 
-  useEffect(()=>{
-    setContent(termsAndCondition?.description);
-  }, [termsAndCondition])
+  useEffect(() => {
+    setContent(terms?.content);
+  }, [terms])
 
 
   return (
-    <div > 
-    <Title className="mb-4">Terms and Condition</Title>
-    <JoditEditor
-      ref={editor}
-      value={content} 
-      config={{
-        height: 600, 
-      }}
+    <div >
+      <Title className="mb-4">Terms and Condition</Title>
+      <JoditEditor
+        ref={editor}
+        value={content}
+        
         onChange={newContent => { setContent(newContent) }}
-    />  
+      />
 
-    <div className='flex items-center justify-center mt-5'>
-<button onClick={termsDataSave} type="primary" htmlType="submit" className="bg-primary text-white w-[160px] h-[42px] rounded-lg">
-            Submit
-          </button>
-      
+      <div className='flex items-center justify-center mt-5'>
+        <button type="primary" onClick={aboutDataSave} htmlType="submit" className="bg-primary text-white w-[160px] h-[42px] rounded-lg">
+          Submit
+        </button>
+
+      </div>
+
     </div>
-
-  </div>
   );
 };
 

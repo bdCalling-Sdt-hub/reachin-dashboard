@@ -1,46 +1,54 @@
 import React, { useState, useRef, useEffect } from 'react';
 import JoditEditor from 'jodit-react';
 import Title from '../../components/common/Title';
+import Spinner from '../../components/common/Spinner';
+import { useCreatePrivacyMutation, useGetPrivacyQuery } from '../../redux/apiSlices/ruleSlice';
 
 const PrivacyPolicy = () => {
   const editor = useRef(null)
   const [content, setContent] = useState('');
+  const [createPrivacy, { isLoading }] = useCreatePrivacyMutation();
+  const { data: privacy, refetch } = useGetPrivacyQuery();
 
-  const privacyPolicy = {
-    description:"Tradcouples Matchmaking Services stands at the forefront of sophisticated matchmaking, where accomplished individuals can make exceptional connections. Here you can find women of your choice by sharing your thoughts and opinions You deserve nothing less than extraordinary – find someone born for you."
+  const aboutDataSave = async () => {
+
+    try {
+      await createPrivacy({ content }).unwrap().then(({ success, message }) => {
+        if (success === true) {
+          toast.success(message);
+          refetch()
+        }
+
+      })
+    } catch ({ message }) {
+      toast.error(message || "Something Wrong");
     }
-
-  const privacyDataSave =async () => {
-
   }
 
 
-  useEffect(()=>{
-    setContent(privacyPolicy?.description);
-  }, [privacyPolicy])
+  useEffect(() => {
+    setContent(privacy?.content);
+  }, [privacy])
 
 
 
   return (
-<div > 
-    <Title className="mb-4">License Terms & Conditions</Title>
-    <JoditEditor
-      ref={editor}
-      value={content} 
-      config={{
-        height: 600, 
-      }}
+    <div >
+      <Title className="mb-4">License Terms & Conditions</Title>
+      <JoditEditor
+        ref={editor}
+        value={content}
         onChange={newContent => { setContent(newContent) }}
-    />  
+      />
 
-    <div className='flex items-center justify-center mt-5'>
-<button onClick={privacyDataSave} type="primary" htmlType="submit" className="bg-primary text-white w-[160px] h-[42px] rounded-lg">
-            Submit
-          </button>
-      
+      <div className='flex items-center justify-center mt-5'>
+        <button onClick={aboutDataSave} type="primary" htmlType="submit" className="bg-primary text-white w-[160px] flex items-center justify-center h-[42px] rounded-lg">
+          { isLoading ? <Spinner/> : "Submit" }
+        </button>
+
+      </div>
+
     </div>
-
-  </div>
   );
 };
 

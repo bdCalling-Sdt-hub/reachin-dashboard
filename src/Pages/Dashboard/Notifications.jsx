@@ -1,38 +1,49 @@
 import React, { useState } from 'react';
 import { ConfigProvider, Pagination } from 'antd';
 import Title from '../../components/common/Title';
+import { useNotificationQuery, useReadNotificationMutation } from '../../redux/apiSlices/notificationSlice';
+import moment from 'moment';
+import { Link } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 const Notifications = () => {
-    const [page, setPage] = useState(1)
+    const [page, setPage] = useState(1);
+    const { data: notification, refetch } = useNotificationQuery(page);
+    const [readNotification] = useReadNotificationMutation();
+    const handleRead = async ()=>{
+        try {
+            await readNotification().unwrap().then((res)=>{
+                if(res.success === true ){
+                    toast.success(res.message);
+                    refetch();
+                }
+            })
+        } catch (error) {
+            toast.error(error?.data?.message)
+        }
+    }
 
     return (
         <div>
             <div className='flex items-center justify-between mb-4'>
                 <Title className='text-[22px]'>All Notifications</Title>
-                <button className='bg-primary text-white h-10 px-4 rounded-md'>Read All</button>
+                <button onClick={handleRead} className='bg-primary text-white h-10 px-4 rounded-md'>Read All</button>
             </div>
 
             <div className='grid grid-cols-1 gap-5 bg-white p-4 rounded-lg'>
                 {
-                    [...Array(8).keys()].map((notification, index)=>{
-                        return(
-                            <div key={index} className='border-b-[1px] pb-2 border-[#d9d9d9] flex items-center gap-3'>
-                                <img 
-                                    style={{
-                                        height:"50px",
-                                        width:"50px",
-                                        borderRadius:"100%",
-                                        border:"2px solid gray"
-                                    }} 
-                                    src='https://img.freepik.com/free-photo/everything-is-okay-cheerful-friendly-looking-caucasian-guy-with-moustache-beard-raising-hand-with-ok-great-gesture-giving-approval-like-having-situation-control_176420-22386.jpg'
-                                />
-                                <div>
-                                    <p><span>Sanchez haro manuel</span> start a new trip at 5pm. Trip No.56. Trip started from Mexico city</p>
-                                    <p style={{color:"gray",marginTop:"4px"}}>1hr ago</p>
+                    notification?.result?.map((notification, index) => {
+                        return (
+                            <Link key={index} to={`${notification?.link}`}>
+                                <div className='border-b-[1px] cursor-pointer pb-2 border-[#d9d9d9] flex items-center gap-3'>
+                                    <div className='w-full flex items-center justify-between'>
+                                        <p>{notification?.text}</p>
+                                        <p style={{ color: "gray", marginTop: "4px" }}>{moment(notification?.createdAt).endOf('day').fromNow()}</p>
+                                    </div>
                                 </div>
-                            </div>
+                            </Link>
                         )
-                    })  
+                    })
                 }
             </div>
 
@@ -46,12 +57,18 @@ const Notifications = () => {
                                 borderRadius: "100%"
                             }
                         },
-                        token:{
+                        token: {
                             colorPrimary: "white"
                         }
                     }}
                 >
-                    <Pagination current={parseInt(page)} total={50} onChange={(page)=> setPage(page)} showQuickJumper={false} showSizeChanger={false}/>
+                    <Pagination
+                        current={parseInt(page)}
+                        total={notification?.meta?.total}
+                        onChange={(page) => setPage(page)}
+                        showQuickJumper={false}
+                        showSizeChanger={false}
+                    />
                 </ConfigProvider>
             </div>
         </div>

@@ -4,14 +4,16 @@ import { Link } from 'react-router-dom';
 import { FaRegBell } from 'react-icons/fa6';
 import { Badge } from 'antd';
 import { useUser } from '../../provider/User';
+import { useNotificationQuery } from '../../redux/apiSlices/notificationSlice';
 
 const Header = () => {
     const { user } = useUser();
+    const { data: notification } = useNotificationQuery();
     const src = user?.profile?.startsWith("https") ? user?.profile : `${imageUrl}/${user?.profile}`
     return (
         <div className='flex items-center gap-5 justify-end'>
             <Link to="/notification" className='h-fit mt-[10px]'>
-                <Badge count={5} >
+                <Badge count={notification?.unreadCount} >
                     <FaRegBell color="#4E4E4E" size={24} />
                 </Badge>
             </Link>

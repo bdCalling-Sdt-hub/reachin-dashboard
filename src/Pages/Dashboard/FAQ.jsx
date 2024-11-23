@@ -5,48 +5,46 @@ import { CiEdit } from 'react-icons/ci';
 import { RxCross2 } from 'react-icons/rx';
 import FaqModal from '../../components/ui/FAQ/FaqModal';
 import Title from '../../components/common/Title';
+import { useDeleteFaqMutation, useGetFaqQuery } from '../../redux/apiSlices/faqSlice';
+import { Pagination } from 'antd';
+import Swal from 'sweetalert2';
+import toast from 'react-hot-toast';
 
 
 const FAQ = () => {
   const [openAddModel, setOpenAddModel] = useState(false);
   const [modalData, setModalData] = useState(null);
+  const [page, setPage] = useState(1);
+  const {data: faqs, refetch} = useGetFaqQuery(page);
+  const [deleteFaq] = useDeleteFaqMutation();
 
-  const handleDelete = async (id) => {
-    // Handle delete logic here
-  }; 
+  const handleDelete = (id) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#2375D0",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes",
+      cancelButtonText: "No"
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await deleteFaq(id).unwrap().then((response) => {
+            console.log(response)
+            if (response.success === true) {
+              refetch();
+              toast.success(response.message);
+            }
+          })
+        } catch (error) {
+          toast.error(error.data.message)
+        }
+      }
+    });
+  }
 
-  const faqInfo = [
-    {
-      _id: "1",
-      question: "What is your return policy?",
-      answer: "Our return policy allows returns within 30 days of purchase with a valid receipt. Items must be in their original condition.",
-    },
-    {
-      _id: "2",
-      question: "How can I track my order?",
-      answer: "You can track your order by using the tracking link sent to your email upon shipment. Alternatively, log in to your account to view the order status.",
-    },
-    {
-      _id: "3",
-      question: "Do you offer international shipping?",
-      answer: "Yes, we offer international shipping to selected countries. Please check our shipping information page for more details.",
-    },
-    {
-      _id: "4",
-      question: "How do I reset my password?",
-      answer: "To reset your password, click on 'Forgot Password' on the login page. A password reset link will be sent to your registered email address.",
-    },
-    {
-      _id: "5",
-      question: "How do I reset my password?",
-      answer: "To reset your password, click on 'Forgot Password' on the login page. A password reset link will be sent to your registered email address.",
-    },
-
-  ];
-  
-  Jodit.make('.editor', {
-    height: '200px',
- })
 
   return (
     <div className="">
@@ -61,19 +59,23 @@ const FAQ = () => {
         </button>
       </div>
 
-      <div className=" pb-6 px-4 rounded-md">
-        {faqInfo?.map((item, index) => (
-          <div key={index} className="flex justify-between items-start gap-4 py-4 px-4 rounded-lg bg-white mb-3">
+      <div className="rounded-md">
+
+        {faqs?.faqs?.map((item, index) => (
+
+          <div key={index} className="flex justify-between items-start gap-4 p-3 rounded-lg bg-white mb-3">
             <GoQuestion color="#2375D0" size={25} className="mt-3" />
             <div className="flex-1">
-              <p className="text-base font-medium rounded-xl py-2 px-4 flex items-center gap-8">
+              <p className="text-base font-medium rounded-xl py-2 flex items-center gap-8">
                 <span className="flex-1">{item?.question}</span>
               </p>
-              <div className=" rounded-xl py-2 px-4 mt-4">
+              <div className=" rounded-xl py-2">
                 <p className="text-[#919191] leading-6">{item?.answer}</p>
               </div>
             </div>
-            <div className="flex items-center gap-2 pt-4">
+
+
+            <div className="flex items-center gap-2 pt-2">
               <CiEdit
                 onClick={() => {
                   setOpenAddModel(true);
@@ -88,6 +90,16 @@ const FAQ = () => {
             </div>
           </div>
         ))}
+      </div>
+
+      <div className='flex items-center justify-center mt-6'>
+        <Pagination
+          current={page}
+          onChange={(e)=>{
+            setPage(e)
+          }}
+          total={faqs?.meta?.total}
+        />
       </div>
 
       <FaqModal

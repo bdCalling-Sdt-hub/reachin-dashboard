@@ -3,12 +3,40 @@ import React, { useState } from 'react';
 import { RiDeleteBin5Line } from 'react-icons/ri';
 import CreateAdmin from '../../components/ui/Admin/CreateAdmin';
 import Title from '../../components/common/Title';
-import { useGetAdminQuery } from '../../redux/apiSlices/adminSlice';
+import { useDeleteAdminMutation, useGetAdminQuery } from '../../redux/apiSlices/adminSlice';
+import Swal from 'sweetalert2';
+import toast from 'react-hot-toast';
 
 const Admin = () => {
     const [open, setOpen] = useState(false);
-    const {data: admins} = useGetAdminQuery();
+    const { data: admins, refetch } = useGetAdminQuery();
+    const [deleteAdmin] = useDeleteAdminMutation();
 
+    const handleDeleteAdmin = (id) => {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#2375D0",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes",
+            cancelButtonText: "No"
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    await deleteAdmin(id).unwrap().then((response) => { 
+                        if(response.success === true){
+                            refetch();
+                            toast.success(response.message);
+                        }
+                    })
+                } catch (error) {
+                    toast.error(error.data.message)
+                }
+            }
+        });
+    }
 
     const columns = [
         {
@@ -31,7 +59,7 @@ const Admin = () => {
             title: "Action",
             dataIndex: "action",
             key: "action",
-            render: (_, record) => <RiDeleteBin5Line size={24} className="text-red-600" />
+            render: (_, record) => <RiDeleteBin5Line onClick={() => handleDeleteAdmin(record._id)} size={24} className="text-red-600 cursor-pointer" />
         },
     ]
 

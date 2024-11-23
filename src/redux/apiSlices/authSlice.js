@@ -55,6 +55,19 @@ const authSlice = api.injectEndpoints({
             }
         }),
 
+        companyDetails: builder.query({
+            query: (id) => {
+                return{
+                    method: "GET",
+                    url: `/user/${id}`
+                }
+            },
+            transformResponse: (data)=>{
+                return data?.data;
+            }
+
+        }),
+
         updateProfile: builder.mutation({
             query: (data) => {
                 return{
@@ -85,4 +98,5 @@ export const {
     useChangePasswordMutation,
     useUpdateProfileMutation,
     useProfileQuery,
+    useCompanyDetailsQuery
 } = authSlice;

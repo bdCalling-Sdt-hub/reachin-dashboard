@@ -10,7 +10,6 @@ const CreateAdmin = ({ open, setOpen }) => {
   const { refetch } = useGetAdminQuery();
 
   const handleClose = async (values) => {
-
     values.role = "ADMIN"
 
     try {
@@ -31,13 +30,13 @@ const CreateAdmin = ({ open, setOpen }) => {
   return (
     <Modal
       centered
+      title={<p className='text-xl'>Add Admin</p>}
       open={open}
       onCancel={() => setOpen(false)}
       width={500}
       footer={null}
     >
-      <div className="p-6 mt-4">
-        <h1 className="font-semibold text-[#555555] text-xl mb-3">Add Admin</h1>
+      <div className="mt-8">
 
         <Form form={form} onFinish={handleClose} layout='vertical'>
           <Form.Item

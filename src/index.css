@@ -78,3 +78,11 @@
 .ant-form-item {
   margin-bottom: 13px !important;
 }
+
+button:where(.swal2-styled){
+  box-shadow: none !important;
+}
+
+.jodit-workplace{
+  height: 550px !important;
+}

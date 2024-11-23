@@ -2,7 +2,6 @@ import { createBrowserRouter } from "react-router-dom";
 import Auth from "../Layout/Auth/Auth";
 import Main from "../Layout/Main/Main";
 import Home from "../Pages/Dashboard/Home";
-import Users from "../Pages/Dashboard/RegisteredUsers";
 import Admin from "../Pages/Dashboard/Admin";
 import PrivacyPolicy from "../Pages/Dashboard/PrivacyPolicy";
 import TermsAndConditions from "../Pages/Dashboard/TermsAndCondition";
@@ -22,15 +21,17 @@ import PeoplesData from "../Pages/Dashboard/ManageData/PeoplesData";
 import CompaniesData from "../Pages/Dashboard/ManageData/CompaniesData";
 import AddPeoplesData from "../components/ui/ManageData/AddPeoplesData";
 import AddCompaniesData from "../components/ui/ManageData/AddCompaniesData";
-import PackageSetting from "../Pages/Dashboard/PackageSetting";
 import OurStories from "../Pages/Dashboard/OurStories";
+import UserTable from "../Pages/Dashboard/UserTable";
+import ProtectedRoute from ".././routes/ProtectedRoute"
+import Package from "../Pages/Dashboard/Package";
+import Contact from "../Pages/Dashboard/Contact";
 
 
 const router = createBrowserRouter([
     {
         path: "/",
-        // element: <ProtectedRoute><Main /></ProtectedRoute> , 
-        element: <Main />,
+        element: <ProtectedRoute><Main /></ProtectedRoute>,
         children: [
             {
                 path: "/",
@@ -42,7 +43,7 @@ const router = createBrowserRouter([
             },
             {
                 path: "/registered-users",
-                element: <Users />
+                element: <UserTable />
             },
             {
                 path: "/subscription-earning",
@@ -82,7 +83,7 @@ const router = createBrowserRouter([
             },
             {
                 path: "/package-setting",
-                element: <PackageSetting />
+                element: <Package />
             },
 
             {
@@ -109,11 +110,14 @@ const router = createBrowserRouter([
             {
                 path: "/profile",
                 element: <AdminProfile />
-            }
-            ,
+            },
             {
                 path: "/notification",
                 element: <Notifications />
+            },
+            {
+                path: "/contact",
+                element: <Contact />
             }
 
         ]

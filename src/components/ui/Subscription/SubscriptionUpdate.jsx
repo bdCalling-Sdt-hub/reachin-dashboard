@@ -1,132 +1,238 @@
-import { Button, Form, Input, Modal } from 'antd';
+import { Form, Input, Modal, Select } from 'antd';
 import React, { useEffect } from 'react';
-import { CiCircleMinus } from 'react-icons/ci';
-import { FaCircleCheck } from 'react-icons/fa6';
-import { GoPlusCircle } from 'react-icons/go';
 import FormItem from '../../common/FormItem';
+import { CgClose } from 'react-icons/cg';
+import toast from 'react-hot-toast';
+import { useCreatePackageMutation, useUpdatePackageMutation } from '../../../redux/apiSlices/packageSlice';
+import Spinner from '../../common/Spinner';
 
-const SubscriptionUpdate = ({open ,setOpen ,items}) => {  
-    const [form] = Form.useForm()     
+const SubscriptionUpdate = ({ open, setOpen, setValue, value, refetch }) => {
+    const [form] = Form.useForm();
+    const [ createPackage, { isLoading } ] = useCreatePackageMutation();
+    const [ updatePackage, { isLoading: updateLoading } ] = useUpdatePackageMutation();
 
-    useEffect(()=>{
- if(items){
- form.setFieldsValue({title:items?.packageName , price:items?.price , features:items?.description })
- }},[items , form])
+    useEffect(() => {
+        if (value) {
+            form.setFieldsValue(value)
+        }
+    }, [value, form]);
+
+
+    const handleSubmit = async (values)=>{
+
+        if(value?._id && value?.price){
+            try {
+                await updatePackage({id: value?._id,  payloadData: values}).unwrap().then((res)=>{
+                    if(res.success){
+                        toast.success(res.message)
+                        refetch();
+                        setValue(false)
+                    }
+                })
+            } catch (error) {
+                toast.error(error?.data?.message)
+            }
+        }else{
+            try {
+                await createPackage(values).unwrap().then((res)=>{
+                    if(res.success){
+                        toast.success(res.message)
+                        refetch();
+                        setOpen(false)
+                    }
+                })
+            } catch (error) {
+                toast.error(error?.data?.message)
+            }
+        }
+
+        
+
+    }
 
     return (
         <div>
             <Modal
                 centered
-                open={open}
+                title={
+                    <div className='flex items-center justify-between'>
+                        <p className='text-xl'>{value ? "Edit Package" : "Add Package"} </p>
+                        <CgClose
+                            className='cursor-pointer'
+                            onClick={() => {
+                                form.resetFields();
+                                setOpen(false);
+                                setValue(null)
+                            }}
+                            size={20}
+                        />
+                    </div>
+                }
+                open={open || value}
                 onCancel={() => {
-                    // null;
-                    form.resetFields()
+                    form.resetFields();
                     setOpen(false);
+                    setValue(null);
                 }}
+                closeIcon={false}
                 width={500}
                 footer={false}
             >
-                <div className="">
-                    <h1
-                        className="font-semibold text-[#555555] text-xl"
-                        style={{ marginBottom: "10px", marginTop: "8px" }}
+                <Form onFinish={handleSubmit} layout="vertical" form={form} className='mt-6'>
+                    <FormItem name="title" label="Title" />
+                    <Form.Item
+                        name="price"
+                        label={<p className='text-[15px] text-[#636363]'>Price</p>}
+                        rules={[
+                            {
+                                required: true,
+                                message: `Please Enter Package Price`,
+                            }
+                        ]}
+                        getValueFromEvent={(e) => {
+                            const inputValue = e.target.value;
+                            const isNumber = /^\d+$/.test(inputValue);
+                            return isNumber ? parseInt(inputValue) : 0;
+                        }}
                     >
-                     {items ? "Add Package" : "Edit Package"}  
-                    </h1>
-                    <Form  layout="vertical" form={form} className='p-3 '>
-                        <div>
-                        <FormItem name="subject" label="Subject" />
-    <FormItem name="price" label="Price" />
-    <FormItem name="credit" label="Credit" /> 
-    {/* //calender hobe  */}
-    <FormItem name="time" label="Set Time" /> 
+                        <Input
+                            placeholder={`Write Package Price`}
+                            style={{
+                                height: 45,
+                                border: "1px solid #d9d9d9",
+                                outline: "none",
+                                boxShadow: "none"
+                            }}
+                        />
+                    </Form.Item>
 
+                    <Form.Item
+                        name="credit"
+                        label={<p className='text-[15px] text-[#636363]'>Credit</p>}
+                        rules={[
+                            {
+                                required: true,
+                                message: `Please Enter Package Credit`,
+                            }
+                        ]}
+                        getValueFromEvent={(e) => {
+                            const inputValue = e.target.value;
+                            const isNumber = /^\d+$/.test(inputValue);
+                            return isNumber ? parseInt(inputValue) : 0;
+                        }}
+                    >
+                        <Input
+                            placeholder={`Write Package Credit`}
+                            style={{
+                                height: 45,
+                                border: "1px solid #d9d9d9",
+                                outline: "none",
+                                boxShadow: "none"
+                            }}
+                        />
+                    </Form.Item>
 
-                            <p className="text-[#6D6D6D]"> Descriptions</p>
-                            <Form.Item
-                                style={{ border: "1px solid #E7EBED", borderRadius: 8 }}
-                                className='p-2'
-                            >
-                                <Form.List name={"features"}  >
-                                    {
-                                        (fields, { add, remove }) => (
-                                            <>
-                                                {
-                                                    fields.map((field, index) => {
-                                                        return (
-                                                            <Form.Item
-                                                                required={false}
-                                                                key={index}
-                                                                className="w-full"
-                                                                style={{ marginBottom: 0 }}
-                                                            >
-                                                                <div className='flex items-center mb-2 gap-[30px] w-full'>
-                                                                    <Form.Item
-                                                                        name={field.name}
-                                                                        fieldKey={field.fieldKey}
-                                                                        validateTrigger={['onChange', 'onBlur']}
-                                                                        style={{ marginBottom: 0 }}
-                                                                        className='w-full'
-                                                                    >
-                                                                        <Input
-                                                                            style={{
-                                                                                width: "100%",
-                                                                                height: 40,
-                                                                                border: "1px solid #E7EBED",
-                                                                                background: "transparent",
-                                                                                borderRadius: "none",
-                                                                                outline: "none",
-                                                                                color: "#415D71",
-                                                                            }}
-                                                                            placeholder='Enter Package Services'
-                                                                            className='roboto-regular text-sm leading-5'
-                                                                            prefix={<FaCircleCheck size={20} style={{ marginRight: 5 }} color='#12354E' />}
-                                                                        />
-                                                                    </Form.Item>
-                                                                    <div>
-                                                                        {
-                                                                            fields.length > 0 ? (
-                                                                                <CiCircleMinus
-                                                                                    size={30}
-                                                                                    className="dynamic lete-button cursor-pointer text-[#D7263D]"
-                                                                                    onClick={() => remove(field.name)}
-                                                                                />
-                                                                            )
-                                                                                :
-                                                                                null
-                                                                        }
-                                                                    </div>
-                                                                </div>
-                                                            </Form.Item>
-                                                        )
-                                                    })
-                                                }
+                    <Form.Item
+                        name="duration"
+                        label={<p className='text-[15px] text-[#636363]'>Duration</p>}
+                        rules={[
+                            {
+                                required: true,
+                                message: `Please Select Package Duration`,
+                            }
+                        ]}
+                    >
+                        <Select
+                            style={{
+                                height: 45,
+                                outline: "none",
+                                boxShadow: "none"
+                            }}
+                            placeholder="Select Package Duration"
+                        >
+                            <Select.Option value="1 month">1 Month</Select.Option>
+                            <Select.Option value="3 months">3 Months</Select.Option>
+                            <Select.Option value="6 months">6 Months</Select.Option>
+                            <Select.Option value="1 year">1 Year</Select.Option>
+                        </Select>
+                    </Form.Item>
 
-                                                <Form.Item
-                                                    style={{ width: "100%", margin: 0, display: "flex", alignItems: "flex-end", justifyContent: "flex-end" }}
-                                                >
-                                                    <GoPlusCircle
-                                                        size={30}
-                                                        color='#12354E'
-                                                        onClick={() => add()}
-                                                    />
-                                                </Form.Item>
-                                            </>
-                                        )
-                                    }
-                                </Form.List>
-                            </Form.Item>
+                    <Form.Item
+                        name="paymentType"
+                        label={<p className='text-[15px] text-[#636363]'>Payment Type</p>}
+                        rules={[
+                            {
+                                required: true,
+                                message: `Please Select Package Payment Type`,
+                            }
+                        ]}
+                    >
+                        <Select
+                            style={{
+                                height: 45,
+                                outline: "none",
+                                boxShadow: "none"
+                            }}
+                            placeholder="Select Package Payment Type"
+                        >
+                            <Select.Option value="Monthly">Monthly</Select.Option>
+                            <Select.Option value="Yearly">Yearly</Select.Option>
+                        </Select>
+                    </Form.Item>
 
-                        </div>
+                    <Form.Item
+                        name="loginLimit"
+                        label={<p className='text-[15px] text-[#636363]'>Login limit</p>}
+                        rules={[
+                            {
+                                required: true,
+                                message: `Please Enter Login limit`,
+                            }
+                        ]}
+                        getValueFromEvent={(e) => {
+                            const inputValue = e.target.value;
+                            const isNumber = /^\d+$/.test(inputValue);
+                            return isNumber ? parseInt(inputValue) : 0;
+                        }}
+                    >
+                        <Input
+                            placeholder={`Write Package Credit`}
+                            style={{
+                                height: 45,
+                                border: "1px solid #d9d9d9",
+                                outline: "none",
+                                boxShadow: "none"
+                            }}
+                        />
+                    </Form.Item>
 
+                    <Form.Item
+                        name="description"
+                        label={<p className='text-[15px] text-[#636363]'>Description</p>}
+                        rules={[
+                            {
+                                required: true,
+                                message: `Please Enter Description`,
+                            }
+                        ]}
+                    >
+                        <Input.TextArea
+                            placeholder={`Write Package Description`}
+                            style={{
+                                height: 120,
+                                border: "1px solid #d9d9d9",
+                                outline: "none",
+                                boxShadow: "none"
+                            }}
+                        />
+                    </Form.Item>
 
-                        <Form.Item className="text-center mt-8">
-                            <button type="primary" htmlType="submit" className=' bg-primary text-white w-[120px] h-[42px] rounded-lg'> 
-                                Submit
-                            </button>
-                        </Form.Item>
-                    </Form>
-                </div>
+                    <Form.Item className="flex items-center justify-center mt-8">
+                        <button type="submit" className='flex items-center justify-center bg-primary text-white w-[120px] h-[42px] rounded-lg'>
+                            { isLoading  || updateLoading ? <Spinner/> : "Submit" }
+                        </button>
+                    </Form.Item>
+                </Form>
             </Modal>
         </div>
     );

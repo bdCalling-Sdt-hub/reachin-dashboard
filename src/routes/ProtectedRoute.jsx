@@ -4,21 +4,23 @@ import { useProfileQuery } from '../redux/apiSlices/authSlice';
 
 const PrivateRoute = ({ children }) => {
     const location = useLocation();
-    const {data: profile, isLoading , isError, isFetching} = useProfileQuery(); 
+    const {data: profile, isLoading , isError, isFetching} = useProfileQuery();
 
     if (isLoading || isFetching) {
-        return <div>Loading...</div>;
+        return <div className='w-screen h-screen flex items-center justify-center'>
+            <img src="/logo.svg" alt="" />
+        </div>;
     }
     
     if (isError) {
-        return <Navigate to="/login" state={{ from: location }} />;
+        return <Navigate to="/auth/login" state={{ from: location }} />;
     }
     
-    if (profile?.role && (profile?.role === "ADMIN" || profile?.role === "SUPER_ADMIN")) {
+    if (profile?.data?.role && (profile?.data?.role === "ADMIN" || profile?.data?.role === "SUPER_ADMIN")) {
         return children;
     }
     
-    return <Navigate to="/login" state={{ from: location }} />;
+    return <Navigate to="/auth/login" state={{ from: location }} />;
 };
 
 export default PrivateRoute;

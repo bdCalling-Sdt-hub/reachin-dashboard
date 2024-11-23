@@ -13,7 +13,7 @@ const DetailsBlog = ({ open, setOpen, getNews }) => {
           width={500}
           footer={false}
         >
-          <div className="p-6 ">
+          <div className="">
             <div className="mx-auto  w-[200px] my-6"> 
               <img src={getNews?.image} alt=""  className="w-[2000px] h-[120px] rounded-lg" />
    
