@@ -10,7 +10,10 @@ import { useGetSubscriptionQuery } from '../../../redux/apiSlices/userSlice';
 import moment from 'moment';
 
 const RegisterUsersDetails = ({ value, setValue }) => {
-  const {data: subscription} = useGetSubscriptionQuery(value?._id);
+  const { data: subscription } = useGetSubscriptionQuery(
+    value?._id,
+    { skip: !value?._id }
+  );
 
 
   const usersData = [
@@ -51,7 +54,7 @@ const RegisterUsersDetails = ({ value, setValue }) => {
       title: 'Price',
       dataIndex: 'price',
       key: 'price',
-      render: (_, record)=> <p>{subscription?.price}</p>
+      render: (_, record) => <p>{subscription?.price}</p>
     },
     {
       title: 'Credits',
@@ -62,16 +65,27 @@ const RegisterUsersDetails = ({ value, setValue }) => {
       title: 'Purchase Date',
       dataIndex: 'currentPeriodStart',
       key: 'currentPeriodStart',
-      render: (_, record)=> <p>{moment(record.currentPeriodStart).format("l")}</p>
+      render: (_, record) => <p>{record?.currentPeriodStart && moment(record?.currentPeriodStart).format("l")}</p>
     },
     {
       title: 'Expired Date',
       dataIndex: 'currentPeriodEnd',
       key: 'currentPeriodEnd',
-      render: (_, record)=> <p>{moment(record.currentPeriodEnd).format("l")}</p>
+      render: (_, record) => <p>{record?.currentPeriodEnd && moment(record?.currentPeriodEnd).format("l")}</p>
     },
   ];
 
+  const data = [
+    {
+      ...subscription?.package,
+      ...(subscription?.currentPeriodStart && {
+        currentPeriodStart: subscription.currentPeriodStart,
+      }),
+      ...(subscription?.currentPeriodEnd && {
+        currentPeriodEnd: subscription.currentPeriodEnd,
+      }),
+    },
+  ];
 
   return (
     <div>
@@ -99,12 +113,12 @@ const RegisterUsersDetails = ({ value, setValue }) => {
 
         <div className=' flex items-center justify-between my-4'>
           <p className=' font-medium  text-lg '>User Package history </p>
-          <button className='flex items-center gap-1 px-2 py-2 border rounded text-[#727070]'> <span> <RiEdit2Line size={18} /> </span> <span>Edit Credits</span> </button>
+          {/* <button className='flex items-center gap-1 px-2 py-2 border rounded text-[#727070]'> <span> <RiEdit2Line size={18} /> </span> <span>Edit Credits</span> </button> */}
         </div>
-        
+
         {
           value?.isSubscribed &&
-        
+
           <div className='bg-[#E9F1FA] py-4 px-8 flex items-center mb-4 justify-between rounded'>
             <p className=' flex flex-col items-center gap-2'>
               <span className='text-md'> Monthly Credit Usage  </span>
@@ -130,7 +144,7 @@ const RegisterUsersDetails = ({ value, setValue }) => {
         }
 
         <Table
-          dataSource={[{...subscription?.package, currentPeriodStart: subscription?.currentPeriodStart, currentPeriodEnd: subscription?.currentPeriodEnd}]}
+          dataSource={ data[0]?._id &&  data?.map((data, index) => { return { ...data, key: index } })}
           columns={columns}
           bordered={false}
           pagination={false}

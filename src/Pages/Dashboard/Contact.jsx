@@ -3,6 +3,7 @@ import { FaRegTrashCan } from 'react-icons/fa6';
 import { useDeleteBulkContactMutation, useDeleteContactMutation, useGetContactQuery } from '../../redux/apiSlices/contactSlice';
 import { Table } from 'antd';
 import toast from 'react-hot-toast';
+import moment from 'moment';
 
 const Contact = () => {
     const [page, setPage] = useState(1);
@@ -83,7 +84,23 @@ const Contact = () => {
             title: "Job Title",
             dataIndex: "jobTitle",
             key: "jobTitle",
+        },
+        {
+            title: "Company",
+            dataIndex: "company",
+            key: "company",
+            render: (_, record) =>(
+                <p>{"TATA"}</p>
+            )
 
+        },
+        {
+            title: "Date",
+            dataIndex: "jobTitle",
+            key: "jobTitle",
+            render: (_, record) =>(
+                <p>{moment(record?.createdAt).format("lll")}</p>
+            )
         },
         {
             title: "Actions",

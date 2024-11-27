@@ -14,7 +14,8 @@ export const api = createApi({
             return headers;
         }
     }),
-    endpoints: () => ({})
+    endpoints: () => ({}),
+    tagTypes: ["notification", "user"]
 });
 
 export const imageUrl = "http://192.168.10.102:6001";

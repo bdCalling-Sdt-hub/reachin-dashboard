@@ -17,13 +17,16 @@ const SubscriptionEarning = () => {
   const itemsPerPage = 10;
 
   const id = new URLSearchParams(useLocation().search).get("id");
-  const { data: details } = useCompanySubscriptionDetailsQuery(id);
+  const { data: details } = useCompanySubscriptionDetailsQuery(
+    id,
+    {skip: !id}
+  );
 
   useEffect(() => {
     if (details?._id && details?.email) {
       setValue(details);
     }
-  }, [details])
+  }, [details]);
 
 
   const columns = [
@@ -141,7 +144,7 @@ const SubscriptionEarning = () => {
       >
         <Table
           columns={columns}
-          dataSource={subscription?.data}
+          dataSource={subscription?.data?.map((data, index)=> {return {...data, key: index}})}
           pagination={{
             current: parseInt(page),
             onChange: (page) => setPage(page),

@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useProfileQuery } from '../redux/apiSlices/authSlice';
+import Cookies from 'js-cookie';
 
 const PrivateRoute = ({ children }) => {
     const location = useLocation();
-    const {data: profile, isLoading , isError, isFetching} = useProfileQuery();
+    const token = Cookies.get('accessToken');
+    const {data: profile, isLoading , isError, isFetching} = useProfileQuery(undefined, { skip: !token });
 
     if (isLoading || isFetching) {
         return <div className='w-screen h-screen flex items-center justify-center'>

@@ -14,7 +14,8 @@ const notificationSlice = api.injectEndpoints({
             },
             transformResponse: (data)=>{
                 return data.data;
-            }
+            },
+            providesTags: ["notification"]
         }),
         readNotification: builder.mutation({
             query: ()=> {
@@ -22,7 +23,8 @@ const notificationSlice = api.injectEndpoints({
                     url: `/notification`,
                     method: "PATCH"
                 }
-            }
+            },
+            invalidatesTags: ["notification"]
         }),
     })
 })

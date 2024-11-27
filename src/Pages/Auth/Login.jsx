@@ -3,13 +3,12 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import FormItem from "../../components/common/FormItem";
 import Spinner from "../../components/common/Spinner";
-import { useLoginMutation, useProfileQuery } from "../../redux/apiSlices/authSlice";
+import { useLoginMutation } from "../../redux/apiSlices/authSlice";
 import toast from "react-hot-toast";
 
 
 const Login = () => {
   const [login, { isLoading }] = useLoginMutation();
-  const { refetch } = useProfileQuery();
   const navigate = useNavigate()
 
 
@@ -19,13 +18,11 @@ const Login = () => {
         .then(result => {
           if (result.success === true) {
             toast.success(result.message);
-            refetch();
             navigate("/")
           }
         });
     } catch (error) {
       toast.error(error);
-      console.log(error)
     }
 
   };
@@ -74,20 +71,19 @@ const Login = () => {
 
             <div className="flex items-center justify-between">
               <Form.Item style={{ marginBottom: 0 }} name="remember" valuePropName="checked">
-                <Checkbox>Remember me</Checkbox>
+                <Checkbox style={{margin: 0}}>Remember me</Checkbox>
               </Form.Item>
 
-              <a
+              <p
                 className="login-form-forgot text-primary font-semibold"
-                href="/auth/forgot-password"
+                onClick={()=>navigate("/auth/forgot-password")}
               >
                 Forgot password
-              </a>
+              </p>
             </div>
 
             <Form.Item style={{ marginBottom: 0 }}>
               <button
-                htmlType="submit"
                 type="submit"
                 style={{
                   width: '100%',

@@ -3,12 +3,13 @@ import { api } from "../api/baseApi";
 const userSlice = api.injectEndpoints({
     endpoints: (builder)=>({
         getUser: builder.query({
-            query: ({search, limit, page, status})=> {
+            query: ({search, limit, page, subscribe, status})=> {
                 const params = new URLSearchParams();
                 if(search) params.append("search", search);
                 if(limit) params.append("limit", limit);
                 if(page) params.append("page", page);
                 if(status) params.append("status", status);
+                if(subscribe) params.append("subscribe", subscribe);
 
                 return{
                     url: `/admin/user?${params.toString()}`,

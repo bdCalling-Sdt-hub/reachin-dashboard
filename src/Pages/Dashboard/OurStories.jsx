@@ -49,7 +49,7 @@ const OurStories = () => {
       {/* header */}
       <div className='flex items-center justify-between mb-3'>
         <Title className=''>Our Stories</Title>
-        <button onClick={() => setOpen(true)} className='bg-primary text-white h-10 px-4 rounded-md'>+ Add Story</button>
+        <button type='button' onClick={() => setOpen(true)} className='bg-primary text-white h-10 px-4 rounded-md'>+ Add Story</button>
       </div>
 
 

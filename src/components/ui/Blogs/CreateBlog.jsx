@@ -139,9 +139,9 @@ const CreateBlog = ({ value, refetch, setValue, setOpen, open }) => {
           >
             <Select className=" rounded  h-[45px]" placeholder="Select Category">
               {blogCategory?.map((option) => (
-                <Option key={option} value={option}>
+                <Select.Option key={option} value={option}>
                   {option}
-                </Option>
+                </Select.Option>
               ))}
             </Select>
           </Form.Item>
@@ -167,7 +167,7 @@ const CreateBlog = ({ value, refetch, setValue, setOpen, open }) => {
           </Form.Item>
 
           <Form.Item className="text-center flex items-center justify-center mt-4">
-            <button type="primary" htmlType="submit" className="bg-primary flex items-center justify-center text-white w-[120px] h-[42px] rounded-lg">
+            <button type="submit" className="bg-primary flex items-center justify-center text-white w-[120px] h-[42px] rounded-lg">
               {isLoading || updateLoading ? <Spinner /> : value ? "Update Blog" : "Create Blog"}
             </button>
           </Form.Item>

@@ -8,6 +8,8 @@ import { PiUserPlus, PiUsers } from 'react-icons/pi';
 import { LuLayoutDashboard } from 'react-icons/lu';
 import { GoDatabase } from 'react-icons/go';
 import { MdOutlineMarkEmailUnread } from 'react-icons/md';
+import { useLogoutMutation } from '../../redux/apiSlices/authSlice';
+import toast from 'react-hot-toast';
 
 
 const Sidebar = () => {
@@ -16,11 +18,21 @@ const Sidebar = () => {
     const [selectedKey, setSelectedKey] = useState("");
     const [openKeys, setOpenKeys] = useState([]);
     const navigate = useNavigate();
+    const [logout] = useLogoutMutation();
 
 
-    const handleLogout = () => {
-        localStorage.removeItem("token")
-        navigate("/auth/login")
+    const handleLogout = async () => {
+        try {
+            await logout().unwrap().then((res)=>{
+                if(res.success === true){
+                    toast.success(res.message)
+                    navigate("/auth/login")
+                }
+            })
+        } catch (error) {
+            toast.error(error.data.message)
+        }
+        
     }
 
     const menuItems = [
@@ -105,9 +117,6 @@ const Sidebar = () => {
             icon: <IoNotificationsOutline size={24} />,
             label: <Link to="/notification" >Notification</Link>
         },
-
-
-
         {
             key: "/logout",
             icon: <IoIosLogOut size={24} />,

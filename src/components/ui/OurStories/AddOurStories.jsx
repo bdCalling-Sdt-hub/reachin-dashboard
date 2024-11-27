@@ -5,6 +5,7 @@ import { Year } from '../../common/FilterOptions';
 import Spinner from '../../common/Spinner';
 import { useCreateStoryMutation, useUpdateStoryMutation } from '../../../redux/apiSlices/storySlice';
 import toast from 'react-hot-toast';
+import { GrClose } from 'react-icons/gr';
 
 const AddOurStories = ({ value, setValue, setOpen, open, refetch }) => {
   const [form] = Form.useForm();
@@ -65,28 +66,50 @@ const AddOurStories = ({ value, setValue, setOpen, open, refetch }) => {
       open={open || value}
       onCancel={handleCancel}
       width={500}
+      closeIcon={false}
       footer={null}
-    >
-      <div className="">
-        <h1 className="font-semibold text-[#555555] text-xl mb-2 mt-2">
+      title={<div className="flex items-center justify-between">
+        <h1 className=" text-[20px] font-medium">
           {value ? "Update Story" : "Add Story"}
         </h1>
+        <GrClose size={18} className="cursor-pointer" onClick={handleCancel} />
+      </div>}
+    >
+      <div className="pt-4">
         <Form onFinish={onFinish} layout="vertical" form={form}>
-          <FormItem name="subject" label="subject" />
+          <FormItem name="subject" label="Subject" />
 
 
-          <Form.Item name="year" label="Year"  >
-            <Select className=" rounded  h-[45px]" defaultValue="2024">
+          <Form.Item
+            name="year"
+            label="Year"
+            rules={[
+              {
+                required: true,
+                message: "Please Pick A Year"
+              }
+            ]}
+          >
+            <Select placeholder="Select Year" className=" rounded  h-[45px]" >
               {Year.map((option) => (
-                <Option key={option.value} value={option.value}>
+                <Select.Option key={option.value} value={option.value}>
                   {option.label}
-                </Option>
+                </Select.Option>
               ))}
             </Select>
           </Form.Item>
 
 
-          <Form.Item name="answer" label={<p className="text-[#6D6D6D]">Description</p>}>
+          <Form.Item
+            name="answer"
+            label={<p className="text-[#6D6D6D]">Description</p>}
+            rules={[
+              {
+                required: true,
+                message: "Please Enter the Description"
+              }
+            ]}
+          >
             <Input.TextArea
               placeholder='Write description'
               style={{
@@ -96,7 +119,7 @@ const AddOurStories = ({ value, setValue, setOpen, open, refetch }) => {
           </Form.Item>
 
           <Form.Item className="text-center mt-4">
-            <button type="primary" htmlType="submit" className="bg-primary text-white w-[120px] h-[42px] rounded-lg">
+            <button type="submit" className="bg-primary text-white w-[120px] h-[42px] rounded-lg">
               {isLoading || updateLoading ? <Spinner /> : value ? "Update Blog" : "Create Blog"}
             </button>
           </Form.Item>

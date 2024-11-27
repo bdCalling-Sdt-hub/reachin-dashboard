@@ -3,7 +3,7 @@ import { useProfileQuery } from '../redux/apiSlices/authSlice';
 export const UserContext = React.createContext(null);
 
 export const UserProvider = ({children})=>{
-    const {data: profile} = useProfileQuery(); 
+    const {data: profile} = useProfileQuery();
     const [user, setUser] = useState(null);
 
     useEffect(()=>{

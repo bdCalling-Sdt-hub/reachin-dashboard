@@ -145,7 +145,8 @@ const Blogs = () => {
       <Table
         style={{ marginTop: 35 }}
         columns={columns}
-        dataSource={blogs?.blogs}
+        dataSource={blogs?.blogs?.map((data, index)=> {return {...data, key: index}})}
+
         pagination={{
           current: page,
           onChange: (e) => setPage(e),

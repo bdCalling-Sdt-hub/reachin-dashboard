@@ -8,6 +8,7 @@ import { useBlockUserMutation, useGetUserQuery, useActiveBulkUserMutation, useBl
 import toast from 'react-hot-toast';
 import { useLocation } from 'react-router-dom';
 import { useCompanyDetailsQuery } from '../../redux/apiSlices/authSlice';
+import { CiMail } from "react-icons/ci";
 
 const UserTable = () => {
     const [search, setSearch] = useState("")
@@ -15,17 +16,20 @@ const UserTable = () => {
     const [value, setValue] = useState(null)
     const itemsPerPage = 10;
     const [status, setStatus] = useState('');
-    const { data: users, refetch } = useGetUserQuery({ status, page, search });
+    const [subscribe, setSubscribe] = useState("")
+    const { data: users, refetch } = useGetUserQuery({ status, subscribe, page, search });
     const [blockUser] = useBlockUserMutation();
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     const [activeBulkUser] = useActiveBulkUserMutation();
     const [blockBulkUser] = useBlockBulkUserMutation();
-
     const id = new URLSearchParams(useLocation().search).get("id");
-    const {data: company} = useCompanyDetailsQuery(id);
+    const { data: company } = useCompanyDetailsQuery(
+        id,
+        {skip: !id}
+    );
 
-    useEffect(()=>{
-        if(company?._id && company?.email){
+    useEffect(() => {
+        if (company?._id && company?.email) {
             setValue(company);
         }
     }, [company])
@@ -114,7 +118,19 @@ const UserTable = () => {
             key: "actions",
             render: (_, record) =>
                 <div className=' flex items-center gap-4'>
-
+                    <div className='h-[30px] w-[50px] '>
+                        {
+                            !record?.isSubscribed &&
+                            <CiMail
+                                size={22}
+                                className="cursor-pointer"
+                                onClick={() => {
+                                    const email = record?.email || "example@example.com";
+                                    window.open(`mailto:${email}`, "_blank");
+                                }}
+                            />
+                        }
+                    </div>
                     <p className='h-[30px] w-[50px]  bg-[#F9F9F9] rounded flex items-center justify-center' onClick={() => setValue(record)} >
                         <FiEye size={20} color='#2375D0' className={"cursor-pointer"} /> </p>
                     <p className='h-[30px] w-[50px]  bg-[#F9F9F9] rounded flex items-center justify-center' >
@@ -162,7 +178,7 @@ const UserTable = () => {
 
                     <Select
                         onChange={(e) => setStatus(e)}
-                        placeholder="Filter By Payment Type"
+                        placeholder="Filter By Status"
                         style={{
                             width: 210,
                             height: 40,
@@ -173,6 +189,21 @@ const UserTable = () => {
                         <Select.Option value="">All</Select.Option>
                         <Select.Option value="Active">Active</Select.Option>
                         <Select.Option value="Block">Block</Select.Option>
+                    </Select>
+
+                    <Select
+                        onChange={(e) => setSubscribe(e)}
+                        placeholder="Filter By Subscription"
+                        style={{
+                            width: 210,
+                            height: 40,
+                            outline: "none",
+                            boxShadow: "none"
+                        }}
+                    >
+                        <Select.Option value="">All</Select.Option>
+                        <Select.Option value="true">Subscribe</Select.Option>
+                        <Select.Option value="false">Not Subscribe</Select.Option>
                     </Select>
 
                 </div>

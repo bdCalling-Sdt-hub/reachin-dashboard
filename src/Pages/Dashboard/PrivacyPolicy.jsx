@@ -42,7 +42,7 @@ const PrivacyPolicy = () => {
       />
 
       <div className='flex items-center justify-center mt-5'>
-        <button onClick={aboutDataSave} type="primary" htmlType="submit" className="bg-primary text-white w-[160px] flex items-center justify-center h-[42px] rounded-lg">
+        <button onClick={aboutDataSave} type="button" className="bg-primary text-white w-[160px] flex items-center justify-center h-[42px] rounded-lg">
           { isLoading ? <Spinner/> : "Submit" }
         </button>
 

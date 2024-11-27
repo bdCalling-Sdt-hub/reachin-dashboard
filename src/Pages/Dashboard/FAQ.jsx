@@ -51,6 +51,7 @@ const FAQ = () => {
       <div className=" mb-4 flex justify-between items-center w-full">
       <Title className=''>Frequently Asked Questions</Title>
         <button
+          type='button'
           onClick={() => setOpenAddModel(true)}
           className="flex items-center gap-1 px-4 py-2 text-white bg-[#2375D0] rounded hover:bg-[#006d80] transition-colors"
         >
@@ -107,6 +108,7 @@ const FAQ = () => {
         openAddModel={openAddModel}
         modalData={modalData}
         setModalData={setModalData}
+        refetch={refetch}
 
       />
     </div>

@@ -21,7 +21,6 @@ const storySlice = api.injectEndpoints({
                 }
             },
             transformResponse: (data)=>{
-                console.log(data)
                 return data?.data;
                 
             }

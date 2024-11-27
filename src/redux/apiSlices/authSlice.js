@@ -25,7 +25,19 @@ const authSlice = api.injectEndpoints({
             transformErrorResponse: ({data})=>{
                 const { message } = data;
                 return message;
-            }
+            },
+            invalidatesTags: ["user"]
+        }),
+        logout: builder.mutation({
+            query: () => {
+                return{
+                    method: "POST",
+                    url: "/auth/logout"
+                }
+            },
+            transformResponse: (data)=>{
+                return data;
+            },
         }),
         forgotPassword: builder.mutation({
             query: (data) => {
@@ -83,9 +95,9 @@ const authSlice = api.injectEndpoints({
                 return{
                     method: "GET",
                     url: "/user/profile"
-                    
                 }
-            }
+            },
+            providesTags: ["user"]
         }),
     })
 });
@@ -98,5 +110,6 @@ export const {
     useChangePasswordMutation,
     useUpdateProfileMutation,
     useProfileQuery,
-    useCompanyDetailsQuery
+    useCompanyDetailsQuery,
+    useLogoutMutation
 } = authSlice;
