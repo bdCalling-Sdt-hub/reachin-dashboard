@@ -39,7 +39,7 @@ const Sidebar = () => {
         {
             key: "/",
             icon: <LuLayoutDashboard size={24} />,
-            label: <Link to="/" className='' >Dashboard</Link>
+            label: <Link to="/">Dashboard</Link>
         },
         {
             key: "/registered-users",
