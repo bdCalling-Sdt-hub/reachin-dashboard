@@ -17,6 +17,7 @@ const Login = () => {
       await login(values).unwrap()
         .then(result => {
           if (result.success === true) {
+            localStorage.setItem("accessToken", result.data.accessToken);
             toast.success(result.message);
             navigate("/")
           }

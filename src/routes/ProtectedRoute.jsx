@@ -5,8 +5,8 @@ import Cookies from 'js-cookie';
 
 const PrivateRoute = ({ children }) => {
     const location = useLocation();
-    const token = Cookies.get('accessToken');
-    const {data: profile, isLoading , isError, isFetching} = useProfileQuery(undefined, { skip: !token });
+    const token = localStorage.getItem("accessToken");
+    const {data: profile, isLoading , isError, isFetching} = useProfileQuery(undefined);
 
     if (isLoading || isFetching) {
         return <div className='w-screen h-screen flex items-center justify-center'>
