@@ -19,7 +19,7 @@ const Login = () => {
             toast.success(result.message);
             localStorage.setItem('accessToken', result.data.accessToken);
             navigate('/');
-            window.location.reload();
+            navigate(0);
           }
         });
     } catch (error) {
