@@ -8,22 +8,21 @@ const PrivateRoute = ({ children }) => {
 
     // Show loading state while fetching data
     if (isLoading || isFetching) {
-        return <div>Loading...</div>;
+        return <div className="w-full h-screen flex items-center justify-center">
+            <img src="/logo.svg" alt="" />
+        </div>;
     }
 
-    // Avoid premature redirection by ensuring the query fully resolves
-    if (!isFetching && !isLoading) {
-        if (isError || !profile?.data?._id) {
-            return <Navigate to="/auth/login" state={{ from: location }} />;
-        }
+    if (isError || !profile?.data) {
+        return <Navigate to="/auth/login" state={{ from: location }} />;
+    }
 
-        if (profile?.data?.role === "ADMIN" || profile?.data?.role === "SUPER_ADMIN") {
-            return children;
-        }
+    if (profile?.data?.role === "ADMIN" || profile?.data?.role === "SUPER_ADMIN") {
+        return children;
     }
 
     // Default redirect if conditions aren't met
-    return <Navigate to="/auth/login" state={{ from: location }} />;
+    return <Navigate to="/auth/login" />;
 };
 
 export default PrivateRoute;

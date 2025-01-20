@@ -31,6 +31,7 @@ import Contact from "../Pages/Dashboard/Contact";
 const router = createBrowserRouter([
     {
         path: "/",
+        // element: <Main />,
         element: <ProtectedRoute><Main /></ProtectedRoute>,
         children: [
             {
