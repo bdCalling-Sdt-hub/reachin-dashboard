@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { LuMoveLeft } from 'react-icons/lu';
 import { Link, useParams } from 'react-router-dom';
-import { Form, Button, Input, Select } from 'antd';
-import FormItem from '../../common/FormItem';
-import { titleOptions } from '../../common/FilterOptions';
+import { Form } from 'antd';
 import { useCreateBulkPeopleMutation, useCreatePeopleMutation, usePeopleDetailsQuery, useUpdatePeopleMutation } from '../../../redux/apiSlices/peopleSlice';
-import { MdOutlineAddPhotoAlternate } from 'react-icons/md';
 import Spinner from '../../common/Spinner';
 import toast from 'react-hot-toast';
 import { imageUrl } from '../../../redux/api/baseApi';
+import CustomInput from '../../common/Input';
+import { FaRegImage } from 'react-icons/fa';
 
 
 const AddPeoplesData = () => {
@@ -18,18 +17,18 @@ const AddPeoplesData = () => {
   // Check if id is a valid string
   const isIdValid = typeof id === 'string' && id.trim().length > 0;
   const { data: people, refetch } = usePeopleDetailsQuery(id, {
-    enabled: isIdValid, // Only call the API if id is valid
+    enabled: isIdValid,
   });
 
   const [updatePeople, { isLoading }] = useUpdatePeopleMutation();
   const [createPeople, { isLoading: createLoading }] = useCreatePeopleMutation();
   const [createBulkPeople] = useCreateBulkPeopleMutation();
-  const [image, setImage] = useState();
+  const [imgUrl, setImgUrl] = useState(null);
 
   useEffect(() => {
     if (people) {
       form.setFieldsValue(people)
-      setImage(people?.image?.startsWith("https") ? people?.image : `${imageUrl}${people?.image}`)
+      setImgUrl(people?.image?.startsWith("https") ? people?.image : `${imageUrl}${people?.image}`)
     }
   }, [people, form]);
 
@@ -59,6 +58,7 @@ const AddPeoplesData = () => {
 
   // Form submission handler
   const onFinish = async (values) => {
+
     const formData = new FormData();
     Object.keys(values).forEach((key) => {
       formData.append(key, values[key])
@@ -124,97 +124,95 @@ const AddPeoplesData = () => {
 
       {/* Form */}
       <Form layout='vertical' form={form} onFinish={onFinish}>
-        {/* Personal Section */}
-        <p className='font-medium text-[20px] text-primary py-4'>Personal</p>
-        <Form.Item name="image" style={{ marginBottom: 0, padding: 0, minHeight: 0 }} />
-        <div className="flex justify-center items-start w-full mb-10">
+
+        <p className='font-medium text-[20px] text-primary py-4'>Company Details</p>
+
+        <Form.Item
+          name="image"
+        >
           <input
+            id="image"
+            type="file"
             onChange={(e) => {
               const file = e.target.files[0];
               form.setFieldsValue({ image: file });
               const imgUrl = URL.createObjectURL(file);
-              setImage(imgUrl);
+              setImgUrl(imgUrl);
             }}
-            type="file"
-            id="img"
-            className="hidden"
             style={{ display: "none" }}
           />
-          <label
-            htmlFor="img"
-            className="relative w-[150px] h-[150px] cursor-pointer rounded-full border border-primary bg-white bg-cover bg-center"
-            style={{ backgroundImage: `url(${image})` }}
-          >
-            <div
-              className="absolute bottom-1 right-1 w-10 h-10 rounded-full border-2 border-primary bg-gray-100 flex items-center justify-center"
-            >
-              <MdOutlineAddPhotoAlternate size={22} className="text-primary" />
+          <label htmlFor="image" className="p-3 cursor-pointer mb-2 flex items-center justify-center">
+            <div className="flex justify-center items-center w-[120px] h-[120px] border rounded-full">
+              {imgUrl ? (
+                <img src={imgUrl} alt="Selected" className="h-full rounded-full w-full object-contain" />
+              ) : (
+                <FaRegImage size={35} />
+              )}
             </div>
           </label>
-        </div>
-
-
+        </Form.Item>
         <div className='grid grid-cols-2 gap-x-10'>
-          <FormItem name="name" label="Contact Name" />
 
-          <Form.Item name="designation" label="Occupation/Title"  >
-            <Select className=" rounded  h-[45px]">
-              {titleOptions.map((option) => (
-                <Select.Option key={option.value} value={option.value}>
-                  {option.label}
-                </Select.Option>
-              ))}
-            </Select>
-          </Form.Item>
-          <FormItem name="location" label="Location" />
-          <FormItem name="email" label="Email" />
-          <FormItem name="hqPhone" label="HQ Phone" />
-          <FormItem name="lineNumber" label="Direct Line" />
-          <FormItem name="mobile" label="Mobile Number" />
-          <FormItem name="website" label="Website" />
+          <CustomInput name="first_name" label="First Name" />
+          <CustomInput name="middle_name" label="Middle Name" />
+          <CustomInput name="last_name" label="Last Name" />
+          <CustomInput name="salutation" label="Salutation" />
+          <CustomInput name="suffix" label="Suffix" />
+          <CustomInput name="title" label="Title" />
+          <CustomInput name="email" label="Email" />
+          <CustomInput name="function" label="Function" />
+          <CustomInput name="phone" label="Phone" />
+          <CustomInput name="mobile" label="Mobile" />
+          <CustomInput name="country" label="Country" />
+          <CustomInput name="city" label="City" />
+          <CustomInput name="state" label="State" />
+          <CustomInput name="zip_code" label="ZIP Code" />
         </div>
-        <p className=' border-b-2 h-1 w-full border-[#cfcece] pt-0 pb-4'></p>
-        {/* Company Details Section */}
+
         <p className='font-medium text-[20px] text-primary py-4'>Company Details</p>
         <div className='grid grid-cols-2 gap-x-10'>
-          <FormItem name="companyName" label="Company Name" />
-          <FormItem name="industry" label="Industry" />
-          <FormItem name="totalEmployee" label="EST. Employee Count" />
-          <FormItem name="revenue" label="EST. Revenue" />
-          <FormItem name="location" label="Local Locations" />
-          <FormItem name="hqLocation" label="HQ Locations" />
+          <CustomInput name="company_name" label="Company Name" />
+          <CustomInput name="zoom_company_id" label="Zoom Company ID" />
+          <CustomInput name="company_linkedin" label="Company LinkedIn" />
+          <CustomInput name="company_facebook" label="Company Facebook" />
+          <CustomInput name="company_twitter" label="Company Twitter" />
+          <CustomInput name="company_overview" label="Company Overview" />
+          <CustomInput name="company_country" label="Company Country" />
+          <CustomInput name="company_city" label="Company City" />
+          <CustomInput name="company_state" label="Company State" />
+          <CustomInput name="company_zip_Code" label="Company ZIP Code" />
+          <CustomInput name="attribute1" label="Attribute 1" />
+          <CustomInput name="attribute2" label="Attribute 2" />
+          <CustomInput name="supplement_email" label="Supplement Email" />
+          <CustomInput name="industry" label="Industry" />
+          <CustomInput name="sub_industry" label="Sub-Industry" />
+          <CustomInput name="employee_count" label="Employee Count" />
+          <CustomInput name="source" label="Source" />
+          <CustomInput name="accuracy_score" label="Accuracy Score" />
+          <CustomInput name="zoom_info_company_profile" label="Zoom Info Company Profile" />
+          <CustomInput name="zoom_info_contact" label="Zoom Info Contact" />
+          <CustomInput name="website" label="Website" />
+          <CustomInput name="revenue" label="Revenue" />
+          <CustomInput name="revenue_range" label="Revenue Range" />
+          <CustomInput name="linkedin" label="LinkedIn" />
+          <CustomInput name="zoom_contact_info" label="Zoom Contact Info" />
+          <CustomInput name="hq_phone" label="HQ Phone" />
         </div>
-        <Form.Item
-          name="overview"
-          label={<p className='text-[15px] text-[#636363]'>Overview</p>}
-        >
-          <Input.TextArea rows={6} placeholder='Write company details' />
-        </Form.Item>
 
-
-        <p className=' border-b-2 h-1 w-full border-[#cfcece] pt-0 pb-4'></p>
-
-        {/* Employees by Management Level Section */}
-        <p className='font-medium text-[20px] text-primary py-4'>Employees by Management Level</p>
+        <p className='font-medium text-[20px] text-primary py-4'>Management Level</p>
         <div className='grid grid-cols-2 gap-x-10'>
-          <FormItem name="openContact" label="Open Contacts" />
-          <FormItem name="nonManager" label="Non-Manager" />
-          <FormItem name="manager" label="Manager" />
-          <FormItem name="directorCount" label="Director" />
-          <FormItem name="cLevel" label="C-Level" />
+          <CustomInput name="seniority" label="Seniority" />
+          <CustomInput name="ownership" label="Ownership" />
+          <CustomInput name="business_model" label="Business Model" />
+          <CustomInput name="image" label="Image" />
+          <CustomInput name="hq_location" label="HQ Location" />
+          <CustomInput name="open_contact" label="Open Contact" />
+          <CustomInput name="non_manager" label="Non-Manager" />
+          <CustomInput name="manager" label="Manager" />
+          <CustomInput name="director" label="Director" />
+          <CustomInput name="c_level" label="C-Level" />
         </div>
 
-        <p className=' border-b-2 h-1 w-full border-[#cfcece] pt-0 pb-4'></p>
-
-        {/* Contact Details Section */}
-        <p className='font-medium text-[20px] text-primary py-4'>Contact Details</p>
-        <div className='grid grid-cols-2 gap-x-10'>
-          <FormItem name="instagram" label="Instagram" />
-          <FormItem name="facebook" label="Facebook" />
-          <FormItem name="twitter" label="Twitter/X" />
-          <FormItem name="linkedin" label="LinkedIn" />
-          <FormItem name="youtube" label="YouTube" />
-        </div>
 
         {/* Submit Button */}
         <Form.Item>
@@ -228,8 +226,8 @@ const AddPeoplesData = () => {
 
           </div>
         </Form.Item>
-      </Form>
-    </div>
+      </Form >
+    </div >
   );
 };
 

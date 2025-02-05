@@ -4,7 +4,7 @@ import Title from '../../common/Title';
 import { HiOutlineBuildingOffice2 } from 'react-icons/hi2';
 import { FiLink, FiPhone } from 'react-icons/fi';
 import { IoMailOutline } from 'react-icons/io5';
-import { LuUser2 } from 'react-icons/lu';
+import { LuUser } from 'react-icons/lu';
 import { RiEdit2Line, RiLinkedinFill } from 'react-icons/ri';
 import { useGetSubscriptionQuery } from '../../../redux/apiSlices/userSlice';
 import moment from 'moment';
@@ -31,7 +31,7 @@ const RegisterUsersDetails = ({ value, setValue }) => {
       value: value?.email
     },
     {
-      icons: <LuUser2 size={20} />,
+      icons: <LuUser size={20} />,
       value: value?.name
     },
     {

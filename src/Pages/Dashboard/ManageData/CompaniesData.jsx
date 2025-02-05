@@ -84,7 +84,7 @@ const CompaniesData = () => {
                         <div className=" flex items-center gap-4">
                               <p
                                     className="h-[30px] w-[50px]  bg-[#F9F9F9] rounded flex items-center justify-center"
-                                    onClick={() => handleEdit(record?.id)}
+                                    onClick={() => handleEdit(record?._id)}
                               >
                                     {' '}
                                     <RiEditLine size={20} color="#2375D0" className={'cursor-pointer'} />{' '}

@@ -2,7 +2,7 @@ import React from 'react';
 import { HiOutlineBuildingOffice2 } from 'react-icons/hi2';
 import { FiLink, FiPhone } from 'react-icons/fi';
 import { IoMailOutline } from 'react-icons/io5';
-import { LuUser2 } from 'react-icons/lu';
+import { LuUser } from 'react-icons/lu';
 import { RiLinkedinFill } from 'react-icons/ri';
 import { Modal } from 'antd';
 import Title from '../../common/Title';
@@ -48,7 +48,7 @@ const SubscriptionEarningDetails = ({ value, setValue }) => {
             value: value?.user?.email
         },
         {
-            icons: <LuUser2 size={20} />,
+            icons: <LuUser size={20} />,
             value: value?.user?.name
         },
         {

@@ -23,7 +23,19 @@ const companySlice = api.injectEndpoints({
                         return data?.data;
                   },
             }),
+            companyDetails: builder.query({
+                  query: (id) => {
+                        return {
+                              url: `/company/details/${id}`,
+                              method: "GET"
+                        };
+                  },
+                  transformResponse: (data) => {
+                        console.log("company", data)
+                      return data?.data;
+                  }
+            }),
       }),
 });
 
-export const { useGetCompanyQuery } = companySlice;
+export const { useGetCompanyQuery, useCompanyDetailsQuery } = companySlice;

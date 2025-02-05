@@ -34,7 +34,6 @@ const PeoplesData = () => {
             revenue,
             country,
       } = useSelector((state) => state.peopleFilter);
-      console.log(search);
 
       const { data, refetch } = useGetPeopleQuery([
             { name: 'page', value: page },
