@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const api = createApi({
     reducerPath: "api",
     baseQuery: fetchBaseQuery({
-        // baseUrl: "http://192.168.10.102:6001/api/v1",
+        // baseUrl: "http://10.0.80.75:6001/api/v1",
         baseUrl: "http://178.16.138.188:5000/api/v1",
         credentials: 'include',
         prepareHeaders: (headers) => {
@@ -19,3 +19,4 @@ export const api = createApi({
 });
 
 export const imageUrl = "http://178.16.138.188:5000";
+// export const imageUrl = "http://10.0.80.75:6001";

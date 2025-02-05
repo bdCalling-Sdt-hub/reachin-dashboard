@@ -58,6 +58,7 @@ const CreateBlog = ({ value, refetch, setValue, setOpen, open }) => {
           if (res.success == true) {
             refetch();
             toast.success(res.message);
+            setOpen(false)
           }
         })
       } catch (error) {

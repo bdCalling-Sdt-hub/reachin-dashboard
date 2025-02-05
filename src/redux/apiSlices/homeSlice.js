@@ -23,11 +23,24 @@ const homeSlice = api.injectEndpoints({
             transformResponse: (data) => {
                 return data?.data;
             }
+        }),
+        getSearchStatistic: builder.query({
+            query: ()=> {
+                return{
+                    url: `/visitor`,
+                    method: "GET"
+                }
+            },
+            transformResponse: (data) => {
+                
+                return data?.data;
+            }
         })
     })
 })
 
 export const {
     useGetSubscriptionStatisticQuery,
-    useGetUserStatisticQuery
+    useGetUserStatisticQuery,
+    useGetSearchStatisticQuery
 } = homeSlice;

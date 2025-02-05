@@ -1,39 +1,53 @@
 import { Form, Input, Modal, Select } from 'antd';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import FormItem from "../../common/FormItem";
 import { Year } from '../../common/FilterOptions';
 import Spinner from '../../common/Spinner';
 import { useCreateStoryMutation, useUpdateStoryMutation } from '../../../redux/apiSlices/storySlice';
 import toast from 'react-hot-toast';
 import { GrClose } from 'react-icons/gr';
+import { FaRegImage } from 'react-icons/fa';
+import { imageUrl } from '../../../redux/api/baseApi';
 
 const AddOurStories = ({ value, setValue, setOpen, open, refetch }) => {
   const [form] = Form.useForm();
+  const [imgUrl, setImgUrl] = useState(null);
   const [createStory, { isLoading }] = useCreateStoryMutation();
   const [updateStory, { isLoading: updateLoading }] = useUpdateStoryMutation();
+
+  console.log(imgUrl)
 
   useEffect(() => {
     if (value) {
       form.setFieldsValue(value)
+      setImgUrl(`${imageUrl}${value?.image}`)
     }
-  }, [value])
-
+  }, [value]);
 
   const handleCancel = () => {
     setValue(null)
     setOpen(false);
+    form.resetFields();
+    setImgUrl(null)
   };
 
 
   const onFinish = async (values) => {
 
+    const formData = new FormData();
+    Object.keys(values).forEach(key => {
+      formData.append(key, values[key])
+    })
+
+
     if (value) {
       try {
-        await updateStory({ id: value._id, payloadData: values }).unwrap().then((res) => {
+        await updateStory({ id: value._id, payloadData: formData }).unwrap().then((res) => {
           if (res.success === true) {
             refetch();
             handleCancel();
             toast.success(res.message);
+            form.resetFields();
           }
         })
       } catch (error) {
@@ -41,11 +55,12 @@ const AddOurStories = ({ value, setValue, setOpen, open, refetch }) => {
       }
     } else {
       try {
-        await createStory(values).unwrap().then((res) => {
+        await createStory(formData).unwrap().then((res) => {
           if (res.success == true) {
             refetch();
             handleCancel();
             toast.success(res.message);
+            form.resetFields();
           }
         })
       } catch (error) {
@@ -77,6 +92,46 @@ const AddOurStories = ({ value, setValue, setOpen, open, refetch }) => {
     >
       <div className="pt-4">
         <Form onFinish={onFinish} layout="vertical" form={form}>
+
+          <Form.Item
+            name="image"
+            label={<p className="text-[#6D6D6D]">Image</p>}
+            rules={[
+              {
+                required: true,
+                validator: () => {
+                  if (!imgUrl) {
+                    return Promise.reject("Please Upload Image")
+                  }
+                  return Promise.resolve();
+                }
+              }
+            ]}
+          >
+            <input
+              id="image"
+              type="file"
+              onChange={(e) => {
+                const file = e.target.files[0];
+                form.setFieldsValue({ image: file });
+                const imgUrl = URL.createObjectURL(file);
+                setImgUrl(imgUrl);
+              }}
+              style={{ display: "none" }}
+            />
+            <label htmlFor="image" className="p-3 border block  mb-2 rounded-lg">
+              <div className="flex justify-center items-center w-full h-[80px] ">
+                {imgUrl ? (
+                  <img src={imgUrl} alt="Selected" className="h-[80px] w-full object-contain p-2" />
+                ) : (
+                  <FaRegImage className="text-5xl" />
+                )}
+              </div>
+            </label>
+          </Form.Item>
+
+
+
           <FormItem name="subject" label="Subject" />
 
 
