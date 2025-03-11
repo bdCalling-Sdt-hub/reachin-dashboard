@@ -3,6 +3,7 @@ import JoditEditor from 'jodit-react';
 import Title from '../../components/common/Title';
 import { useCreateTermsMutation, useGetTermsQuery } from '../../redux/apiSlices/ruleSlice';
 import toast from 'react-hot-toast';
+import Spinner from '../../components/common/Spinner';
 
 
 const TermsAndCondition = () => {

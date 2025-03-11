@@ -107,7 +107,7 @@ const Sidebar = () => {
                               key: '/license-terms',
                               label: (
                                     <Link to="/license-terms" className="text-white hover:text-white">
-                                          Terms of License
+                                          Data & Privacy Policy
                                     </Link>
                               ),
                         },

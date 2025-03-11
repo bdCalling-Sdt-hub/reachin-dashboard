@@ -133,7 +133,7 @@ const FaqModal = ({ setModalData, modalData, refetch, openAddModel, setOpenAddMo
             />
           </Form.Item>
           <Form.Item className=" text-end">
-            <button type="submit" className="bg-primary text-white w-[120px] h-[42px] rounded-lg">
+            <button type="submit" className="bg-primary flex items-center justify-center text-white w-[120px] h-[42px] rounded-lg">
               {isLoading || updateLoading ? <Spinner /> : "Submit"}
             </button>
           </Form.Item>

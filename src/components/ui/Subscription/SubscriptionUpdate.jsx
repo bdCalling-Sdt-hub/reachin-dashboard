@@ -181,32 +181,6 @@ const SubscriptionUpdate = ({ open, setOpen, setValue, value, refetch }) => {
                     </Form.Item>
 
                     <Form.Item
-                        name="loginLimit"
-                        label={<p className='text-[15px] text-[#636363]'>Login limit</p>}
-                        rules={[
-                            {
-                                required: true,
-                                message: `Please Enter Login limit`,
-                            }
-                        ]}
-                        getValueFromEvent={(e) => {
-                            const inputValue = e.target.value;
-                            const isNumber = /^\d+$/.test(inputValue);
-                            return isNumber ? parseInt(inputValue) : 0;
-                        }}
-                    >
-                        <Input
-                            placeholder={`Write Package Credit`}
-                            style={{
-                                height: 45,
-                                border: "1px solid #d9d9d9",
-                                outline: "none",
-                                boxShadow: "none"
-                            }}
-                        />
-                    </Form.Item>
-
-                    <Form.Item
                         name="description"
                         label={<p className='text-[15px] text-[#636363]'>Description</p>}
                         rules={[

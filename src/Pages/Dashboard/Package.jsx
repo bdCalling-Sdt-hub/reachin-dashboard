@@ -76,12 +76,6 @@ const Package = () => {
 
             },
             {
-                title: "Login Limit",
-                dataIndex: "loginLimit",
-                key: "paymentType",
-
-            },
-            {
                 title: "Description",
                 dataIndex: "description",
                 key: "description",
