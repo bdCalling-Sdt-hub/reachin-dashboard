@@ -45,7 +45,7 @@ const TermsAndCondition = () => {
       />
 
       <div className='flex items-center justify-center mt-5'>
-        <button type="button" onClick={aboutDataSave}  className="bg-primary text-white w-[160px] h-[42px] rounded-lg">
+        <button type="button" onClick={aboutDataSave}  className="bg-primary flex items-center justify-center text-white w-[160px] h-[42px] rounded-lg">
           {isLoading ? <Spinner/> : "Submit"}
         </button>
 
