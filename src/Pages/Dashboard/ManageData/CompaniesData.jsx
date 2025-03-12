@@ -120,10 +120,11 @@ const CompaniesData = () => {
       };
       return (
             <>
-                  <div className=" mb-4">
-                        <Title>Companies Data</Title>
+                  <Title>Companies Data</Title>
+                  <div className=" mb-4 flex items-center justify-between">
+                        
 
-                        <div className=" flex my-3 items-center gap-2 text-gray-500">
+                        <div className="flex my-3 items-center gap-2 text-gray-500">
                               <p className="cursor-pointer">
                                     <FiDownload size={24} />{' '}
                               </p>
@@ -134,16 +135,20 @@ const CompaniesData = () => {
                                     <MdOutlineDelete size={24} />{' '}
                               </p>
                         </div>
-                        <CompanyFilter />
 
-                        <button
-                              className="bg-primary text-white h-10 px-4  mt-2 rounded-md"
-                              onClick={() => {
-                                    navigate('/add-companies-data');
-                              }}
-                        >
-                              + Add Data
-                        </button>
+                        <div className='flex items-center gap-6'>
+                              <CompanyFilter />
+
+                              <button
+                                    className="bg-primary text-white h-10 px-4  mt-2 rounded-md"
+                                    onClick={() => {
+                                          navigate('/add-companies-data');
+                                    }}
+                              >
+                                    + Add Data
+                              </button>
+                        </div>
+                        
                   </div>
 
                   <ConfigProvider

@@ -1,13 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { LuMoveLeft } from 'react-icons/lu';
 import { Link, useParams } from 'react-router-dom';
-import { Form } from 'antd';
+import { Form, Select } from 'antd';
 import { useCreateBulkPeopleMutation, useCreatePeopleMutation, usePeopleDetailsQuery, useUpdatePeopleMutation } from '../../../redux/apiSlices/peopleSlice';
 import Spinner from '../../common/Spinner';
 import toast from 'react-hot-toast';
 import { imageUrl } from '../../../redux/api/baseApi';
 import CustomInput from '../../common/Input';
 import { FaRegImage } from 'react-icons/fa';
+import {
+  employeeRanges,
+  primaryIndustries,
+  regions,
+  revenueRanges,
+  seniorityLevels,
+  sources,
+  subIndustries,
+  titleOptions,
+} from '../../../components/common/FilterOptions';
 
 
 const AddPeoplesData = () => {
@@ -125,7 +135,7 @@ const AddPeoplesData = () => {
       {/* Form */}
       <Form layout='vertical' form={form} onFinish={onFinish}>
 
-        <p className='font-medium text-[20px] text-primary py-4'>Company Details</p>
+        <p className='font-medium text-[20px] text-primary py-4'>Personal Details</p>
 
         <Form.Item
           name="image"
@@ -158,12 +168,55 @@ const AddPeoplesData = () => {
           <CustomInput name="last_name" label="Last Name" />
           <CustomInput name="salutation" label="Salutation" />
           <CustomInput name="suffix" label="Suffix" />
-          <CustomInput name="title" label="Title" />
+
+          <Form.Item
+            name="title"
+            label={<p className='text-[15px] text-[#636363]'>Title</p>}
+          >
+            <Select
+              placeholder={`Pick Title`}
+              style={{
+                height: 45,
+                outline: "none",
+                boxShadow: "none"
+              }}
+              name="title"
+            >
+
+              {titleOptions.map((option) => (
+                <Select.Option key={option.value} value={option.value}>
+                  {option.label}
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+          {/* <CustomInput name="title" label="Title" /> */}
           <CustomInput name="email" label="Email" />
           <CustomInput name="function" label="Function" />
           <CustomInput name="phone" label="Phone" />
           <CustomInput name="mobile" label="Mobile" />
-          <CustomInput name="country" label="Country" />
+          <Form.Item
+            name="country"
+            label={<p className='text-[15px] text-[#636363]'>Country</p>}
+          >
+            <Select
+              placeholder={`Pick Country`}
+              style={{
+                height: 45,
+                outline: "none",
+                boxShadow: "none"
+              }}
+              name="country"
+            >
+
+              {regions.map((option) => (
+                <Select.Option key={option.value} value={option.value}>
+                  {option.label}
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+          {/* <CustomInput name="country" label="Country" /> */}
           <CustomInput name="city" label="City" />
           <CustomInput name="state" label="State" />
           <CustomInput name="zip_code" label="ZIP Code" />
@@ -184,15 +237,126 @@ const AddPeoplesData = () => {
           <CustomInput name="attribute1" label="Attribute 1" />
           <CustomInput name="attribute2" label="Attribute 2" />
           <CustomInput name="supplement_email" label="Supplement Email" />
-          <CustomInput name="industry" label="Industry" />
-          <CustomInput name="sub_industry" label="Sub-Industry" />
-          <CustomInput name="employee_count" label="Employee Count" />
-          <CustomInput name="source" label="Source" />
+
+          <Form.Item
+            name="industry"
+            label={<p className='text-[15px] text-[#636363]'>Industry</p>}
+          >
+            <Select
+              placeholder={`Pick Industry`}
+              style={{
+                height: 45,
+                outline: "none",
+                boxShadow: "none"
+              }}
+              name="industry"
+            >
+
+              {primaryIndustries.map((option) => (
+                <Select.Option key={option.value} value={option.value}>
+                  {option.label}
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+
+          <Form.Item
+            name="sub_industry"
+            label={<p className='text-[15px] text-[#636363]'>Sub Industry</p>}
+          >
+            <Select
+              placeholder={`Pick Industry`}
+              style={{
+                height: 45,
+                outline: "none",
+                boxShadow: "none"
+              }}
+              name="sub_industry"
+            >
+
+              {subIndustries.map((option) => (
+                <Select.Option key={option.value} value={option.value}>
+                  {option.label}
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+
+
+          {/* <CustomInput name="industry" label="Industry" /> */}
+          {/* <CustomInput name="sub_industry" label="Sub-Industry" /> */}
+          {/* <CustomInput name="employee_count" label="Employee Count" /> */}
+
+          <Form.Item
+            name="Employee Count"
+            label={<p className='text-[15px] text-[#636363]'>Employee Count</p>}
+          >
+            <Select
+              placeholder={`Pick Employee Count`}
+              style={{
+                height: 45,
+                outline: "none",
+                boxShadow: "none"
+              }}
+              name="employee_count"
+            >
+
+              {employeeRanges.map((option) => (
+                <Select.Option key={option.value} value={option.value}>
+                  {option.label}
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+
+
+
+
+          <Form.Item
+            name="source"
+            label={<p className='text-[15px] text-[#636363]'>Sources</p>}
+          >
+            <Select
+              placeholder={`Pick Sources`}
+              style={{
+                height: 45,
+                outline: "none",
+                boxShadow: "none"
+              }}
+              name="source"
+            >
+
+              {sources.map((option) => (
+                <Select.Option key={option.value} value={option.value}>
+                  {option.label}
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+
+          {/* <CustomInput name="source" label="Source" /> */}
           <CustomInput name="accuracy_score" label="Accuracy Score" />
           <CustomInput name="zoom_info_company_profile" label="Zoom Info Company Profile" />
           <CustomInput name="zoom_info_contact" label="Zoom Info Contact" />
           <CustomInput name="website" label="Website" />
-          <CustomInput name="revenue" label="Revenue" />
+          <Form.Item
+            name="Revenue"
+            label={<p className='text-[15px] text-[#636363]'>Revenue</p>}
+          >
+            <Select
+              placeholder={`Pick Revenue`}
+              style={{
+                height: 45,
+                outline: "none",
+                boxShadow: "none"
+              }}
+            >
+              <Select.Option value="1">Option 1</Select.Option>
+              <Select.Option value="2">Option 2</Select.Option>
+              <Select.Option value="3">Option 3</Select.Option>
+            </Select>
+          </Form.Item>
+          {/* <CustomInput name="revenue" label="Revenue" /> */}
           <CustomInput name="revenue_range" label="Revenue Range" />
           <CustomInput name="linkedin" label="LinkedIn" />
           <CustomInput name="zoom_contact_info" label="Zoom Contact Info" />
@@ -201,10 +365,32 @@ const AddPeoplesData = () => {
 
         <p className='font-medium text-[20px] text-primary py-4'>Management Level</p>
         <div className='grid grid-cols-2 gap-x-10'>
-          <CustomInput name="seniority" label="Seniority" />
+
+        <Form.Item
+            name="seniority"
+            label={<p className='text-[15px] text-[#636363]'>Seniority</p>}
+          >
+            <Select
+              placeholder={`Pick Seniority`}
+              style={{
+                height: 45,
+                outline: "none",
+                boxShadow: "none"
+              }}
+              name="seniority"
+            >
+
+              {seniorityLevels.map((option) => (
+                <Select.Option key={option.value} value={option.value}>
+                  {option.label}
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+
+          {/* <CustomInput name="seniority" label="Seniority" /> */}
           <CustomInput name="ownership" label="Ownership" />
           <CustomInput name="business_model" label="Business Model" />
-          <CustomInput name="image" label="Image" />
           <CustomInput name="hq_location" label="HQ Location" />
           <CustomInput name="open_contact" label="Open Contact" />
           <CustomInput name="non_manager" label="Non-Manager" />

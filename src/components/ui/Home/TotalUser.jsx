@@ -4,6 +4,8 @@ import { useGetUserStatisticQuery } from '../../../redux/apiSlices/homeSlice';
 
 const TotalUser = () => {
   const {data: user} = useGetUserStatisticQuery();
+
+  console.log(user)
   return (
     <div className="grid grid-cols-12 gap-5 items-center h-[220px] mt-16 ">
       <div className=" col-span-9 w-full bg-white rounded-lg  ">
@@ -38,7 +40,7 @@ const TotalUser = () => {
       {/* summary section  */}
       <div className="col-span-3 bg-white rounded-lg p-4 h-full ">
         <div className='flex items-center justify-between'>
-          <p className="text-lg font-semibold text-[#555555]">Total Subscriptions</p>
+          <p className="text-lg font-semibold text-[#555555]">Total Users</p>
           {/* <select className="mt-2  border rounded w-[130px] h-[45px]">
             <option>2025</option>
             <option>2024</option>
@@ -57,7 +59,7 @@ const TotalUser = () => {
           </div>
           <div className="flex flex-col gap-2">
             <p className="text-gray-600">Regd. users</p>
-            <p className="text-blue-500 text-xl font-semibold">40.80K</p>
+            <p className="text-blue-500 text-xl font-semibold">{user?.totalUser ? user?.totalUser : 0}</p>
           </div>
           <div className="flex flex-col gap-2">
             <p className="text-gray-600">Daily Subs users</p>
